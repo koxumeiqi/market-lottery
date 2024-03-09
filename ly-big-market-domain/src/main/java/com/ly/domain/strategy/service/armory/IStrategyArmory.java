@@ -1,4 +1,4 @@
-package com.ly.domain.strategy.service;
+package com.ly.domain.strategy.service.armory;
 
 /**
  * 策略装配库，负责初始化策略计算的，将策略存储进Redis中后续使用

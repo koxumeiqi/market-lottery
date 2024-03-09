@@ -15,6 +15,7 @@ import com.ly.infrastructure.persistent.po.StrategyRule;
 import com.ly.infrastructure.persistent.redis.RedissonService;
 import com.ly.types.common.Constants;
 import com.ly.types.exception.AppException;
+import org.apache.catalina.startup.AddPortOffsetRule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -129,5 +130,22 @@ public class StrategyRepository implements IStrategyRepository {
                 .ruleValue(strategyRule.getRuleValue())
                 .ruleDesc(strategyRule.getRuleDesc())
                 .build();
+    }
+
+    @Override
+    public String queryStrategyRuleValue(Long strategyId, Integer awardId, String ruleModel) {
+        StrategyRule strategyRule = strategyRuleDao.selectOne(new LambdaQueryWrapper<StrategyRule>()
+                .eq(StrategyRule::getStrategyId, strategyId)
+//                .eq(StrategyRule::getAwardId, awardId)
+                .eq(StrategyRule::getRuleModel, ruleModel));
+        return strategyRule.getRuleValue();
+    }
+
+    @Override
+    public String queryStrategyWhiteRuleValue(Long strategyId, String ruleModel) {
+        StrategyRule strategyRule = strategyRuleDao.selectOne(new LambdaQueryWrapper<StrategyRule>()
+                .eq(StrategyRule::getStrategyId, strategyId)
+                .eq(StrategyRule::getRuleModel, ruleModel));
+        return strategyRule.getRuleValue();
     }
 }

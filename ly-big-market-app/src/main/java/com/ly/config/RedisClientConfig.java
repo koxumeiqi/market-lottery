@@ -51,7 +51,7 @@ public class RedisClientConfig {
         return Redisson.create(config);
     }
 
-    static class RedisCodec extends BaseCodec {
+    /*static class RedisCodec extends BaseCodec {
 
         private final Encoder encoder = in -> {
             ByteBuf out = ByteBufAllocator.DEFAULT.buffer();
@@ -80,6 +80,6 @@ public class RedisClientConfig {
             return encoder;
         }
 
-    }
+    }*/
 
 }

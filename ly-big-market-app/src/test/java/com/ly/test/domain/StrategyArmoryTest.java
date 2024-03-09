@@ -1,8 +1,7 @@
 package com.ly.test.domain;
 
 
-import com.ly.domain.strategy.service.IStrategyArmory;
-import com.ly.domain.strategy.service.StrategyArmoryDispatch;
+import com.ly.domain.strategy.service.armory.StrategyArmoryDispatch;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;

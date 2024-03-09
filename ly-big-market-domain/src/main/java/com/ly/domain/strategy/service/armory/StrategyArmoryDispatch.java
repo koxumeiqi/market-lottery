@@ -1,4 +1,4 @@
-package com.ly.domain.strategy.service;
+package com.ly.domain.strategy.service.armory;
 
 
 import com.ly.domain.strategy.model.entity.StrategyAwardEntity;

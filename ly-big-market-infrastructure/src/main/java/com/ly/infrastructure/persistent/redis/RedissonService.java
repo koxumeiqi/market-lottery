@@ -66,6 +66,7 @@ public class RedissonService implements IRedisService {
         return redissonClient.getAtomicLong(key).addAndGet(delta);
     }
 
+
     @Override
     public long decr(String key) {
         return redissonClient.getAtomicLong(key).decrementAndGet();
@@ -110,6 +111,7 @@ public class RedissonService implements IRedisService {
     public <K, V> RMap<K, V> getMap(String key) {
         return redissonClient.getMap(key);
     }
+
 
     public void addToMap(String key, String field, String value) {
         RMap<String, String> map = redissonClient.getMap(key);

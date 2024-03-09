@@ -8,8 +8,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
@@ -38,14 +40,25 @@ public class DefaultLogicFactory {
     @AllArgsConstructor
     public enum LogicModel {
 
-        RULE_DEFAULT("rule_default", "默认抽奖"),
-        RULE_BLACKLIST("rule_blacklist", "黑名单抽奖"),
-        RULE_WHITELIST("rule_whitelist", "白名单抽奖"),
-        RULE_WEIGHT("rule_weight", "权重规则"),
-        ;
+        RULE_DEFAULT("rule_default", "默认抽奖", "before"),
+        RULE_BLACKLIST("rule_blacklist", "黑名单抽奖", "before"),
+        RULE_WHITELIST("rule_whitelist", "白名单抽奖", "before"),
+        RULE_WEIGHT("rule_weight", "权重规则", "before"),
+        RULE_CENTER_LOCK("rule_lock", "中置规则", "center"),
+        RULE_AFTER("rule_luck_award", "后置规则", "after");
 
         private final String code;
         private final String info;
+        private final String type;
+
+        public static boolean isCenter(String code) {
+            LogicModel[] values = LogicModel.values();
+            Optional<LogicModel> any = Arrays.stream(values)
+                    .filter(logicModel -> logicModel.code.equals(code))
+                    .findAny();
+            if (any.isPresent()) return true;
+            return false;
+        }
 
     }
 }

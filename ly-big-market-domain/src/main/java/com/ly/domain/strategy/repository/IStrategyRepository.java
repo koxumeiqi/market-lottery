@@ -3,6 +3,7 @@ package com.ly.domain.strategy.repository;
 import com.ly.domain.strategy.model.entity.StrategyAwardEntity;
 import com.ly.domain.strategy.model.entity.StrategyEntity;
 import com.ly.domain.strategy.model.entity.StrategyRuleEntity;
+import com.ly.domain.strategy.model.valobj.StrategyAwardRuleModelVO;
 
 import java.util.List;
 import java.util.Map;
@@ -42,4 +43,11 @@ public interface IStrategyRepository {
 
     String queryStrategyWhiteRuleValue(Long strategyId, String ruleModel);
 
+    String getLockCount(Integer awardId, Long strategyId, String ruleModel);
+
+    Long updateLockCount(String userId, Integer awardId, Long strategyId);
+
+    StrategyAwardRuleModelVO queryStrategyAwardRuleModelVO(Long strategyId, Integer awardId);
+
+    Long rQueryLockCount(String userId, Integer awardId, Long strategyId, Long lockCount);
 }

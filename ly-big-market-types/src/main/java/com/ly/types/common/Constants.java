@@ -17,6 +17,8 @@ public class Constants {
         public static String STRATEGY_AWARD_COUNT_KEY = "strategy_award_count_key_";
         public static String STRATEGY_AWARD_COUNT_QUERY_KEY = "strategy_award_count_query_key";
 
+        public static String STRATEGY_USER_AWARD_LOCK_KEY = "strategy_user_lock_key_";
+
     }
 
 }

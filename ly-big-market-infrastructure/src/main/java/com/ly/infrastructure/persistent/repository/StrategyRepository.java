@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.conditions.query.QueryChainWrapper;
 import com.ly.domain.strategy.model.entity.StrategyAwardEntity;
 import com.ly.domain.strategy.model.entity.StrategyEntity;
 import com.ly.domain.strategy.model.entity.StrategyRuleEntity;
+import com.ly.domain.strategy.model.valobj.StrategyAwardRuleModelVO;
 import com.ly.domain.strategy.repository.IStrategyRepository;
 import com.ly.infrastructure.persistent.dao.IStrategyAwardDao;
 import com.ly.infrastructure.persistent.dao.IStrategyDao;
@@ -147,5 +148,43 @@ public class StrategyRepository implements IStrategyRepository {
                 .eq(StrategyRule::getStrategyId, strategyId)
                 .eq(StrategyRule::getRuleModel, ruleModel));
         return strategyRule.getRuleValue();
+    }
+
+    @Override
+    public String getLockCount(Integer awardId, Long strategyId, String ruleModel) {
+        StrategyRule strategyRule = strategyRuleDao.selectOne(new LambdaQueryWrapper<StrategyRule>()
+                .eq(StrategyRule::getStrategyId, strategyId)
+                .eq(StrategyRule::getAwardId, awardId)
+                .eq(StrategyRule::getRuleModel, ruleModel)
+        );
+        return strategyRule.getRuleValue();
+    }
+
+    @Override
+    public Long updateLockCount(String userId, Integer awardId, Long strategyId) {
+        // key是strategyId+userId，value是lockCount
+        String cacheKey = Constants.RedisKey.STRATEGY_USER_AWARD_LOCK_KEY + strategyId + Constants.COLON + userId;
+        long userLockCount = redisService.incr(cacheKey);
+        return Long.valueOf(userLockCount);
+    }
+
+    @Override
+    public StrategyAwardRuleModelVO queryStrategyAwardRuleModelVO(Long strategyId, Integer awardId) {
+        StrategyAward strategyAward = strategyAwardDao.selectOne(
+                new LambdaQueryWrapper<StrategyAward>()
+                        .eq(StrategyAward::getStrategyId, strategyId)
+                        .eq(StrategyAward::getAwardId, awardId)
+        );
+        return StrategyAwardRuleModelVO.builder()
+                .ruleModels(strategyAward.getRuleModels())
+                .build();
+    }
+
+    @Override
+    public Long rQueryLockCount(String userId, Integer awardId, Long strategyId, Long lockCount) {
+        // key是strategyId+userId，value是lockCount
+        String cacheKey = Constants.RedisKey.STRATEGY_USER_AWARD_LOCK_KEY + strategyId + Constants.COLON + userId;
+        int userLockCount = redisService.getValue(cacheKey);
+        return Long.valueOf(userLockCount);
     }
 }

@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * 规则动作实体
+ *
  * @param <T>
  */
 @Data
@@ -43,6 +44,19 @@ public class RuleActionEntity<T extends RuleActionEntity.RaffleEntity> {
         private String ruleWeightValueKey;
 
         private Integer awardId;
+    }
+
+    /**
+     * 抽奖之前
+     */
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    static public class CenterRaffleEntity extends RaffleEntity {
+
+        private Long raffleTimes;
+
     }
 
     static public class AfterRaffleEntity extends RaffleEntity {

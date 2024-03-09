@@ -33,11 +33,11 @@ public class RedisClientConfig {
                                          RedisClientConfigProperties properties) {
         Config config = new Config();
         // 根据需要可以设定编解码器；https://github.com/redisson/redisson/wiki/4.-%E6%95%B0%E6%8D%AE%E5%BA%8F%E5%88%97%E5%8C%96
-        // config.setCodec(new RedisCodec());
+        config.setCodec(new RedisCodec());
 
         config.useSingleServer()
                 .setAddress("redis://" + properties.getHost() + ":" + properties.getPort())
-//                .setPassword(properties.getPassword())
+                .setPassword(properties.getPassword())
                 .setConnectionPoolSize(properties.getPoolSize())
                 .setConnectionMinimumIdleSize(properties.getMinIdleSize())
                 .setIdleConnectionTimeout(properties.getIdleTimeout())
@@ -51,7 +51,7 @@ public class RedisClientConfig {
         return Redisson.create(config);
     }
 
-    /*static class RedisCodec extends BaseCodec {
+    static class RedisCodec extends BaseCodec {
 
         private final Encoder encoder = in -> {
             ByteBuf out = ByteBufAllocator.DEFAULT.buffer();
@@ -80,6 +80,6 @@ public class RedisClientConfig {
             return encoder;
         }
 
-    }*/
+    }
 
 }

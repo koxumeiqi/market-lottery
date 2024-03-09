@@ -1,10 +1,8 @@
 package com.ly.domain.strategy.service.raffle;
 
-import com.ly.domain.strategy.model.entity.RaffleAwardEntity;
-import com.ly.domain.strategy.model.entity.RaffleFactorEntity;
-import com.ly.domain.strategy.model.entity.RuleActionEntity;
-import com.ly.domain.strategy.model.entity.StrategyEntity;
+import com.ly.domain.strategy.model.entity.*;
 import com.ly.domain.strategy.model.valobj.RuleLogicCheckTypeVO;
+import com.ly.domain.strategy.model.valobj.StrategyAwardRuleModelVO;
 import com.ly.domain.strategy.repository.IStrategyRepository;
 import com.ly.domain.strategy.service.armory.IStrategyDispatch;
 import com.ly.domain.strategy.service.rule.factory.DefaultLogicFactory;
@@ -29,6 +27,7 @@ public abstract class AbstractRaffleStrategy implements IRaffleStrategy {
 
     @Override
     public RaffleAwardEntity performRaffle(RaffleFactorEntity raffleFactorEntity) {
+        AlreadyGetAward alreadyGetAward = new AlreadyGetAward();
         // 1. 参数校验
         String userId = raffleFactorEntity.getUserId();
         Long strategyId = raffleFactorEntity.getStrategyId();
@@ -48,29 +47,55 @@ public abstract class AbstractRaffleStrategy implements IRaffleStrategy {
         if (RuleLogicCheckTypeVO.TAKE_OVER.getCode().equals(ruleActionEntity.getCode())) {
             if (DefaultLogicFactory.LogicModel.RULE_BLACKLIST.getCode().equals(ruleActionEntity.getRuleModel())) {
                 // 黑名单返回固定的奖品ID
-                return RaffleAwardEntity.builder()
-                        .awardId(ruleActionEntity.getData().getAwardId())
-                        .build();
+                alreadyGetAward.setFlag(true);
+                alreadyGetAward.setAwardId(ruleActionEntity.getData().getAwardId());
             } else if (DefaultLogicFactory.LogicModel.RULE_WEIGHT.getCode().equals(ruleActionEntity.getRuleModel())
                     || DefaultLogicFactory.LogicModel.RULE_WHITELIST.getCode().equals(ruleActionEntity.getRuleModel())) {
                 // 权重根据返回的信息进行抽奖
                 RuleActionEntity.BeforeRaffleEntity raffleBeforeEntity = ruleActionEntity.getData();
                 String ruleWeightValueKey = raffleBeforeEntity.getRuleWeightValueKey();
                 Integer awardId = strategyDispatch.getRandomAwardId(strategyId, ruleWeightValueKey);
-                return RaffleAwardEntity.builder()
-                        .awardId(awardId)
-                        .build();
+                alreadyGetAward.setFlag(true);
+                alreadyGetAward.setAwardId(awardId);
             }
         }
 
         // 4. 默认抽奖流程
-        Integer awardId = strategyDispatch.getRandomAwardId(strategyId);
+        if (!alreadyGetAward.isFlag()) {
+            Integer awardId = strategyDispatch.getRandomAwardId(strategyId);
+            alreadyGetAward.setFlag(true);
+            alreadyGetAward.setAwardId(awardId);
+        }
+        Integer awardId = alreadyGetAward.getAwardId();
+        // 这时候确定了随机抽中的奖品,更新用户抽奖次数
+        Long cnt = repository.updateLockCount(userId, awardId, strategyId);
 
+        // 获取到奖品中对应的ruleModel
+        // 5. 查询奖品规则「抽奖中（拿到奖品ID时，过滤规则）、抽奖后（扣减完奖品库存后过滤，抽奖中拦截和无库存则走兜底）」
+        StrategyAwardRuleModelVO strategyAwardRuleModelVO = repository
+                .queryStrategyAwardRuleModelVO(strategyId, awardId);
+        // 6. 抽奖中 - 规则过滤
+        RuleActionEntity<RuleActionEntity.CenterRaffleEntity> ruleActionCenterEntity =
+                this.doCheckRaffleCenterLogic(RaffleFactorEntity.builder()
+                        .userId(userId)
+                        .strategyId(strategyId)
+                        .awardId(awardId)
+                        .build(), strategyAwardRuleModelVO.raffleCenterRuleModelList());
+        if (RuleLogicCheckTypeVO.TAKE_OVER.getCode().equals(ruleActionCenterEntity.getCode())) {
+            log.info("【临时日志】中奖中规则拦截，通过抽奖后规则 rule_luck_award 走兜底奖励。");
+            log.info("【用户已经抽奖次数】用户---->抽取了{}次", cnt);
+            return RaffleAwardEntity.builder()
+                    .awardDesc("中奖中规则拦截，通过抽奖后规则 rule_luck_award 走兜底奖励。")
+                    .build();
+        }
         return RaffleAwardEntity.builder()
                 .awardId(awardId)
                 .build();
     }
 
+
     protected abstract RuleActionEntity<RuleActionEntity.BeforeRaffleEntity> doCheckRaffleBeforeLogic(RaffleFactorEntity raffleFactorEntity, String... logics);
+
+    protected abstract RuleActionEntity<RuleActionEntity.CenterRaffleEntity> doCheckRaffleCenterLogic(RaffleFactorEntity build, String... strings);
 
 }

@@ -134,7 +134,7 @@ public class StrategyRepository implements IStrategyRepository {
     }
 
     @Override
-    public String queryStrategyRuleValue(Long strategyId, Integer awardId, String ruleModel) {
+    public String queryStrategyRuleValue(Long strategyId, String ruleModel) {
         StrategyRule strategyRule = strategyRuleDao.selectOne(new LambdaQueryWrapper<StrategyRule>()
                 .eq(StrategyRule::getStrategyId, strategyId)
 //                .eq(StrategyRule::getAwardId, awardId)

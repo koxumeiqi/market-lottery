@@ -1,0 +1,178 @@
+server:
+  port: 8091
+
+
+
+# 线程池配置
+thread:
+  pool:
+    executor:
+      config:
+        core-pool-size: 20
+        max-pool-size: 50
+        keep-alive-time: 5000
+        block-queue-size: 5000
+        policy: CallerRunsPolicy
+
+
+spring:
+  kafka:
+    topic:
+      # 奖品发放领域事件
+      send_award: send_award
+      # 活动库存为 0，最终一致性
+      activity_sku_stock_zero: activity_sku_stock_zero
+      # 用户行为返利领域事件
+      send_rebate: send_rebate
+    bootstrap-servers: 192.168.181.128:9094,192.168.181.128:9095
+    producer: # 生产者
+      retries: 3 # 设置大于0的值，则客户端会将发送失败的记录重新发送
+      batch-size: 16384
+      buffer-memory: 33554432
+      acks: all
+      # 指定消息key和消息体的编解码方式
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      group-id: default-group
+      enable-auto-commit: false
+      auto-offset-reset: earliest
+    listener:
+      ack-mode: manual_immediate
+      # 当每一条记录被消费者监听器（ListenerConsumer）处理之后提交
+      # RECORD
+      # 当每一批poll()的数据被消费者监听器（ListenerConsumer）处理之后提交
+      # BATCH
+      # 当每一批poll()的数据被消费者监听器（ListenerConsumer）处理之后，距离上次提交时间大于TIME时提交
+      # TIME
+      # 当每一批poll()的数据被消费者监听器（ListenerConsumer）处理之后，被处理record数量大于等于COUNT时提交
+      # COUNT
+      # TIME |　COUNT　有一个条件满足时提交
+      # COUNT_TIME
+      # 当每一批poll()的数据被消费者监听器（ListenerConsumer）处理之后, 手动调用Acknowledgment.acknowledge()后提交
+      # MANUAL
+      # 手动调用Acknowledgment.acknowledge()后立即提交
+      # MANUAL_IMMEDIATE
+
+
+
+custom-db-router:
+  jdbc:
+    datasource:
+      dbCount: 2
+      tbCount: 4
+      default: db00
+      routerKey: userId
+      list: db01,db02
+      db00:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://127.0.0.1:3306/big_market?useUnicode=true&characterEncoding=utf8&autoReconnect=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useSSL=true
+        username: root
+        password: 123456
+        type-class-name: com.zaxxer.hikari.HikariDataSource
+        pool:
+          pool-name: Retail_HikariCP
+          minimum-idle: 15 #最小空闲连接数量
+          idle-timeout: 180000 #空闲连接存活最大时间，默认600000（10分钟）
+          maximum-pool-size: 25 #连接池最大连接数，默认是10
+          auto-commit: true  #此属性控制从池返回的连接的默认自动提交行为,默认值：true
+          max-lifetime: 1800000 #此属性控制池中连接的最长生命周期，值0表示无限生命周期，默认1800000即30分钟
+          connection-timeout: 30000 #数据库连接超时时间,默认30秒，即30000
+          connection-test-query: SELECT 1
+      db01:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://127.0.0.1:3306/big_market_01?useUnicode=true&characterEncoding=utf8&autoReconnect=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useSSL=true
+        username: root
+        password: 123456
+        type-class-name: com.zaxxer.hikari.HikariDataSource
+        pool:
+          pool-name: Retail_HikariCP
+          minimum-idle: 15 #最小空闲连接数量
+          idle-timeout: 180000 #空闲连接存活最大时间，默认600000（10分钟）
+          maximum-pool-size: 25 #连接池最大连接数，默认是10
+          auto-commit: true  #此属性控制从池返回的连接的默认自动提交行为,默认值：true
+          max-lifetime: 1800000 #此属性控制池中连接的最长生命周期，值0表示无限生命周期，默认1800000即30分钟
+          connection-timeout: 30000 #数据库连接超时时间,默认30秒，即30000
+          connection-test-query: SELECT 1
+      db02:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://127.0.0.1:3306/big_market_02?useUnicode=true&characterEncoding=utf8&autoReconnect=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useSSL=true
+        username: root
+        password: 123456
+        type-class-name: com.zaxxer.hikari.HikariDataSource
+        pool:
+          pool-name: Retail_HikariCP
+          minimum-idle: 15 #最小空闲连接数量
+          idle-timeout: 180000 #空闲连接存活最大时间，默认600000（10分钟）
+          maximum-pool-size: 25 #连接池最大连接数，默认是10
+          auto-commit: true  #此属性控制从池返回的连接的默认自动提交行为,默认值：true
+          max-lifetime: 1800000 #此属性控制池中连接的最长生命周期，值0表示无限生命周期，默认1800000即30分钟
+          connection-timeout: 30000 #数据库连接超时时间,默认30秒，即30000
+          connection-test-query: SELECT 1
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath:/mybatis/mapper/*.xml
+
+# Redis
+redis:
+  sdk:
+    config:
+      host: 111.229.95.167
+      port: 6379
+      pool-size: 10
+      min-idle-size: 5
+      idle-timeout: 30000
+      connect-timeout: 5000
+      retry-attempts: 3
+      retry-interval: 1000
+      ping-interval: 60000
+      keep-alive: true
+      password: 031119
+
+# 日志
+logging:
+  level:
+    root: info
+  config: classpath:logback-spring.xml
+#nacos:
+#  config:
+#    server-addr: 111.229.95.167:8848
+#    group: DEFAULT_GROUP
+#    username: nacos
+#    password: nacos
+#
+#dubbo:
+#  application:
+#    name: market-rpc
+#  registry:
+#    address: nacos://${nacos.config.server-addr}
+#    timeout: 5000
+#    username: nacos
+#    password: nacos
+#  protocol:
+#    name: dubbo
+
+# 应用配置
+app:
+  config:
+    # 版本，方便通过接口版本升级
+    api-version: v1
+    # 跨域，开发阶段可以设置为 * 不限制
+    cross-origin: '*'
+
+# 动态线程池管理配置
+dynamic:
+  thread:
+    pool:
+      config:
+        # 状态；true = 开启、false 关闭
+        enabled: true
+        # redis host
+        host: 111.229.95.167
+        # redis port
+        port: 6379
+        password: 031119

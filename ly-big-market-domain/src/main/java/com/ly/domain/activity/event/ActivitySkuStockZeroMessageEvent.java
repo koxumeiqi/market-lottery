@@ -1,0 +1,33 @@
+package com.ly.domain.activity.event;
+
+import com.ly.types.event.BaseEvent;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import java.util.Date;
+
+
+/**
+ * 活动sku库存清空消息
+ */
+@Component
+public class ActivitySkuStockZeroMessageEvent extends BaseEvent<Long> {
+
+    @Value("${spring.kafka.topic.activity_sku_stock_zero}")
+    private String topic;
+
+    @Override
+    public EventMessage<Long> buildEventMessage(Long data) {
+        return EventMessage.<Long>builder()
+                .data(data)
+                .timestamp(new Date())
+                .id(RandomStringUtils.randomNumeric(11))
+                .build();
+    }
+
+    @Override
+    public String topic() {
+        return topic;
+    }
+}

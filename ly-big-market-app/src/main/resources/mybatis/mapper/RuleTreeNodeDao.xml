@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ly.infrastructure.persistent.dao.RuleTreeNodeDao">
+
+    <select id="queryRuleLocks" resultType="com.ly.infrastructure.persistent.po.RuleTreeNode">
+        select tree_id, rule_value
+        from rule_tree_node
+        where rule_key = 'rule_lock' and tree_id in
+        <foreach collection="treeIds" item="treeId" open="(" close=")"
+                 separator=",">
+            #{treeId}
+        </foreach>
+    </select>
+</mapper>

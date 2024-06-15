@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ly.infrastructure.persistent.dao.IStrategyAwardDao">
+
+    <update id="updateStrategyAwardStock">
+        update strategy_award
+        set award_count_surplus = award_count_surplus - 1
+        where strategy_id = #{strategyId}
+          and award_id = #{awardId}
+          and award_count_surplus > 0
+    </update>
+</mapper>

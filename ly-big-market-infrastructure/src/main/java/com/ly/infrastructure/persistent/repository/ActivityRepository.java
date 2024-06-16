@@ -162,6 +162,22 @@ public class ActivityRepository implements IActivityRepository {
         raffleActivityAccount.setMonthCount(createOrderAggregate.getMonthCount());
         raffleActivityAccount.setMonthCountSurplus(createOrderAggregate.getMonthCount());
 
+        // 账户对象 - 月
+        RaffleActivityAccountMonth raffleActivityAccountMonth = new RaffleActivityAccountMonth();
+        raffleActivityAccountMonth.setUserId(createOrderAggregate.getUserId());
+        raffleActivityAccountMonth.setActivityId(createOrderAggregate.getActivityId());
+        raffleActivityAccountMonth.setMonth(raffleActivityAccountMonth.currentMonth());
+        raffleActivityAccountMonth.setMonthCount(createOrderAggregate.getMonthCount());
+        raffleActivityAccountMonth.setMonthCountSurplus(createOrderAggregate.getMonthCount());
+
+        // 账户对象 - 日
+        RaffleActivityAccountDay raffleActivityAccountDay = new RaffleActivityAccountDay();
+        raffleActivityAccountDay.setUserId(createOrderAggregate.getUserId());
+        raffleActivityAccountDay.setActivityId(createOrderAggregate.getActivityId());
+        raffleActivityAccountDay.setDay(raffleActivityAccountDay.currentDay());
+        raffleActivityAccountDay.setDayCount(createOrderAggregate.getDayCount());
+        raffleActivityAccountDay.setDayCountSurplus(createOrderAggregate.getDayCount());
+
         // 进行路由 - 使得路由组件里的 ThreadLocal 里是有分库信息的
         routerStrategy.doRouter(createOrderAggregate.getUserId());
 
@@ -173,6 +189,11 @@ public class ActivityRepository implements IActivityRepository {
                 // 更新账户
                 int cnt = raffleActivityAccountMapper.updateAccountQuota(raffleActivityAccount);
                 if (cnt == 0) raffleActivityAccountMapper.insert(raffleActivityAccount);
+
+                // 4. 更新账户 - 月
+                raffleActivityAccountMonthDao.addAccountQuota(raffleActivityAccountMonth);
+                // 5. 更新账户 - 日
+                raffleActivityAccountDayDao.addAccountQuota(raffleActivityAccountDay);
 
                 return true;
             } catch (DuplicateKeyException e) {
@@ -187,7 +208,7 @@ public class ActivityRepository implements IActivityRepository {
 
     @Override
     public void cacheActivitySkuStockCount(String cacheKey, Integer stockCount) {
-        if (redisService.isExists(cacheKey)) return;
+//        if (redisService.isExists(cacheKey)) return;
         redisService.setAtomicLong(cacheKey, stockCount);
     }
 

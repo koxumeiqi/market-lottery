@@ -2,6 +2,8 @@ package com.ly.api;
 
 import com.ly.api.dto.ActivityDrawRequestDTO;
 import com.ly.api.dto.ActivityDrawResponseDTO;
+import com.ly.api.dto.UserActivityAccountRequestDTO;
+import com.ly.api.dto.UserActivityAccountResponseDTO;
 import com.ly.types.model.Response;
 
 
@@ -14,6 +16,7 @@ public interface IRaffleActivityService {
 
     /**
      * 活动装配，数据预热缓存
+     *
      * @param activityId 活动ID
      * @return 装配结果
      */
@@ -21,6 +24,7 @@ public interface IRaffleActivityService {
 
     /**
      * 活动抽奖接口
+     *
      * @param request 请求对象
      * @return 返回结果
      */
@@ -41,5 +45,7 @@ public interface IRaffleActivityService {
      * @return 签到结果 true 表示已签到 false 未签到
      */
     Response<Boolean> isCalendarSignRebate(String userId);
+
+    Response<UserActivityAccountResponseDTO> queryUserActivityAccount(UserActivityAccountRequestDTO request);
 
 }

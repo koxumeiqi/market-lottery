@@ -5,7 +5,11 @@ import com.alibaba.fastjson.JSON;
 import com.ly.api.IRaffleActivityService;
 import com.ly.api.dto.ActivityDrawRequestDTO;
 import com.ly.api.dto.ActivityDrawResponseDTO;
+import com.ly.api.dto.UserActivityAccountRequestDTO;
+import com.ly.api.dto.UserActivityAccountResponseDTO;
+import com.ly.domain.activity.model.entity.ActivityAccountEntity;
 import com.ly.domain.activity.model.entity.UserRaffleOrderEntity;
+import com.ly.domain.activity.service.IRaffleActivityAccountQuotaService;
 import com.ly.domain.activity.service.IRaffleActivityPartakeService;
 import com.ly.domain.activity.service.armory.IActivityArmory;
 import com.ly.domain.award.model.entity.UserAwardRecordEntity;
@@ -54,6 +58,9 @@ public class RaffleActivityController implements IRaffleActivityService {
 
     @Resource
     private IRaffleActivityPartakeService raffleActivityPartakeService;
+
+    @Resource
+    private IRaffleActivityAccountQuotaService raffleActivityAccountQuotaService;
 
     @Resource
     private IRaffleStrategy raffleStrategy;
@@ -201,4 +208,49 @@ public class RaffleActivityController implements IRaffleActivityService {
                     .build();
         }
     }
+
+    /**
+     * 查询账户额度
+     * <p>
+     * curl --request POST \
+     * --url http://localhost:8091/api/v1/raffle/activity/query_user_activity_account \
+     * --header 'content-type: application/json' \
+     * --data '{
+     * "userId":"xiaofuge",
+     * "activityId": 100301
+     * }'
+     */
+    @RequestMapping(value = "query_user_activity_account", method = RequestMethod.POST)
+    @Override
+    public Response<UserActivityAccountResponseDTO> queryUserActivityAccount(UserActivityAccountRequestDTO request) {
+        try {
+            log.info("查询用户活动账户开始 userId:{} activityId:{}", request.getUserId(), request.getActivityId());
+            // 1. 参数校验
+            if (StringUtils.isBlank(request.getUserId()) || null == request.getActivityId()) {
+                throw new AppException(ResponseCode.ILLEGAL_PARAMETER.getCode(), ResponseCode.ILLEGAL_PARAMETER.getInfo());
+            }
+            ActivityAccountEntity activityAccountEntity = raffleActivityAccountQuotaService.queryActivityAccountEntity(request.getActivityId(), request.getUserId());
+            UserActivityAccountResponseDTO userActivityAccountResponseDTO = UserActivityAccountResponseDTO.builder()
+                    .totalCount(activityAccountEntity.getTotalCount())
+                    .totalCountSurplus(activityAccountEntity.getTotalCountSurplus())
+                    .dayCount(activityAccountEntity.getDayCount())
+                    .dayCountSurplus(activityAccountEntity.getDayCountSurplus())
+                    .monthCount(activityAccountEntity.getMonthCount())
+                    .monthCountSurplus(activityAccountEntity.getMonthCountSurplus())
+                    .build();
+            log.info("查询用户活动账户完成 userId:{} activityId:{} dto:{}", request.getUserId(), request.getActivityId(), JSON.toJSONString(userActivityAccountResponseDTO));
+            return Response.<UserActivityAccountResponseDTO>builder()
+                    .code(ResponseCode.SUCCESS.getCode())
+                    .info(ResponseCode.SUCCESS.getInfo())
+                    .data(userActivityAccountResponseDTO)
+                    .build();
+        } catch (Exception e) {
+            log.error("查询用户活动账户失败 userId:{} activityId:{}", request.getUserId(), request.getActivityId(), e);
+            return Response.<UserActivityAccountResponseDTO>builder()
+                    .code(ResponseCode.UN_ERROR.getCode())
+                    .info(ResponseCode.UN_ERROR.getInfo())
+                    .build();
+        }
+    }
+
 }

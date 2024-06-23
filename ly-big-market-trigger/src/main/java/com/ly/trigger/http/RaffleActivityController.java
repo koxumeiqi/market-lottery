@@ -12,6 +12,7 @@ import com.ly.domain.award.model.entity.UserAwardRecordEntity;
 import com.ly.domain.award.model.vo.AwardStateVO;
 import com.ly.domain.award.service.IAwardService;
 import com.ly.domain.rebate.model.entity.BehaviorEntity;
+import com.ly.domain.rebate.model.entity.BehaviorRebateOrderEntity;
 import com.ly.domain.rebate.model.vo.BehaviorTypeVO;
 import com.ly.domain.rebate.service.IBehaviorRebateService;
 import com.ly.domain.strategy.model.entity.RaffleAwardEntity;
@@ -171,6 +172,28 @@ public class RaffleActivityController implements IRaffleActivityService {
                     .build();
         } catch (Exception e) {
             log.error("日历签到返利失败 userId:{}", userId);
+            return Response.<Boolean>builder()
+                    .code(ResponseCode.UN_ERROR.getCode())
+                    .info(ResponseCode.UN_ERROR.getInfo())
+                    .data(false)
+                    .build();
+        }
+    }
+
+    @Override
+    public Response<Boolean> isCalendarSignRebate(String userId) {
+        try {
+            log.info("查询用户是否完成日历签到返利开始 userId:{}", userId);
+            String outBusinessNo = dateFormatDay.format(new Date());
+            List<BehaviorRebateOrderEntity> behaviorRebateOrderEntities = behaviorRebateService.queryOrderByOutBusinessNo(userId, outBusinessNo);
+            log.info("查询用户是否完成日历签到返利完成 userId:{} orders.size:{}", userId, behaviorRebateOrderEntities.size());
+            return Response.<Boolean>builder()
+                    .code(ResponseCode.SUCCESS.getCode())
+                    .info(ResponseCode.SUCCESS.getInfo())
+                    .data(!behaviorRebateOrderEntities.isEmpty()) // 只要不为空，则表示已经做了签到
+                    .build();
+        } catch (Exception e) {
+            log.error("查询用户是否完成日历签到返利失败 userId:{}", userId, e);
             return Response.<Boolean>builder()
                     .code(ResponseCode.UN_ERROR.getCode())
                     .info(ResponseCode.UN_ERROR.getInfo())

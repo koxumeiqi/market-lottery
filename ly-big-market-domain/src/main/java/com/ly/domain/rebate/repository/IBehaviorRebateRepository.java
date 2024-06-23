@@ -1,6 +1,7 @@
 package com.ly.domain.rebate.repository;
 
 import com.ly.domain.rebate.aggregate.BehaviorRebateAggregate;
+import com.ly.domain.rebate.model.entity.BehaviorRebateOrderEntity;
 import com.ly.domain.rebate.model.vo.BehaviorTypeVO;
 import com.ly.domain.rebate.model.vo.DailyBehaviorRebateVO;
 
@@ -12,4 +13,5 @@ public interface IBehaviorRebateRepository {
 
     void saveUserRebateRecord(String userId, List<BehaviorRebateAggregate> behaviorRebateAggregates);
 
+    List<BehaviorRebateOrderEntity> queryOrderByOutBusinessNo(String userId, String outBusinessNo);
 }

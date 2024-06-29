@@ -37,4 +37,6 @@ public interface IRaffleActivityAccountQuotaService {
      */
     ActivityAccountEntity queryActivityAccountEntity(Long activityId, String userId);
 
+    Integer queryRaffleActivityAccountPartakeCount(Long activityId, String userId);
+
 }

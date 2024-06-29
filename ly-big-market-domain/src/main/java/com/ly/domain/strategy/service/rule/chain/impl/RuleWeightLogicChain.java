@@ -28,14 +28,14 @@ public class RuleWeightLogicChain extends AbstractLogicChain {
     private IStrategyDispatch strategyDispatch;
 
     // 根据用户ID查询用户抽奖消耗的积分值，本章节我们先写死为固定的值。后续需要从数据库中查询。
-    public Long userScore = 0L; // TODO 用户分值，后续是由全端传递的，这里是先模拟
+//    public Long userScore = 0L; // TODO 用户分值，后续是由全端传递的，这里是先模拟
 
     @Override
     public DefaultChainFactory.StrategyAwardVO logic(String userId, Long strategyId) {
         log.info("抽奖责任链-权重开始 userId: {} strategyId: {} ruleModel: {}", userId, strategyId, ruleModel());
 
         String ruleValue = repository.queryStrategyRuleValue(strategyId, ruleModel());
-        if(ruleValue == null) return next().logic(userId, strategyId);
+        if (ruleValue == null) return next().logic(userId, strategyId);
 
         // 1. 解析权重规则值 4000:102,103,104,105 拆解为；4000 -> 4000:102,103,104,105 便于比对判断
         Map<Long, String> analyticalValueGroup = getAnalyticalValue(ruleValue);
@@ -48,7 +48,11 @@ public class RuleWeightLogicChain extends AbstractLogicChain {
         List<Long> analyticalSortedKeys = new ArrayList<>(analyticalValueGroup.keySet());
         Collections.sort(analyticalSortedKeys);
 
+        // 对用户抽奖次数进行个查询
+        Integer userScore = repository.queryActivityAccountTotalUseCount(userId, strategyId);
+
         // 3. 找出最小符合的值，也就是【4500 积分，能找到 4000:102,103,104,105】、【5000 积分，能找到 5000:102,103,104,105,106,107】
+        // 这里是根据抽奖次数，非积分
         Long nextValue = analyticalSortedKeys.stream()
                 .sorted(Comparator.reverseOrder())
                 .filter(analyticalSortedKeyValue -> userScore >= analyticalSortedKeyValue)

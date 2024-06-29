@@ -33,6 +33,18 @@ public class RaffleActivityControllerTest {
     }
 
     @Test
+    public void test_calendarSignRebate() {
+        Response<Boolean> response = raffleActivityService.calendarSignRebate("myz");
+        log.info("测试结果：{}", JSON.toJSONString(response));
+    }
+
+    @Test
+    public void test_isCalendarSignRebate() {
+        Response<Boolean> response = raffleActivityService.isCalendarSignRebate("myz");
+        log.info("测试结果：{}", JSON.toJSONString(response));
+    }
+
+    @Test
     public void test_draw() {
         ActivityDrawRequestDTO request = new ActivityDrawRequestDTO();
         request.setActivityId(100301L);

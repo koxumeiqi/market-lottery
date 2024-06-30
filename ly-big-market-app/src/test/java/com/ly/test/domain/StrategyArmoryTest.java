@@ -19,7 +19,7 @@ public class StrategyArmoryTest {
 
     @Test
     public void test() {
-        strategyArmory.assembleLotteryStrategy(100001L);
+        strategyArmory.assembleLotteryStrategy(100006L);
     }
 
     @Test

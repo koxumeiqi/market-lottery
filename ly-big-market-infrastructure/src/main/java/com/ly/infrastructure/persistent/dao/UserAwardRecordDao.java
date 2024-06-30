@@ -11,4 +11,6 @@ public interface UserAwardRecordDao extends BaseMapper<UserAwardRecord> {
 
     void insertUserAwardRecord(UserAwardRecord userAwardRecord);
 
+    int updateAwardRecordCompletedState(UserAwardRecord userAwardRecordReq);
+
 }

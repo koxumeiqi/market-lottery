@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ly.infrastructure.persistent.dao.IUserCreditAccountDao">
+    <insert id="insert">
+        insert into user_credit_account(user_id, total_amount, available_amount, account_status, create_time,
+                                        update_time)
+        values (#{userId}, #{totalAmount}, #{availableAmount}, #{accountStatus}, now(), now())
+    </insert>
+
+    <update id="updateAwardRecordCompletedState">
+        update user_award_record
+        set award_state = 'completed'
+        where user_id = #{userId}
+          and order_id = #{orderId}
+          and award_state = 'create'
+    </update>
+    <update id="updateAddAmount">
+        update user_credit_account
+        set total_amount     = total_amount + #{totalAmount},
+            available_amount = available_amount + #{availableAmount}
+        where user_id = #{userId}
+    </update>
+</mapper>

@@ -24,7 +24,7 @@ spring:
       activity_sku_stock_zero: activity_sku_stock_zero
       # 用户行为返利领域事件
       send_rebate: send_rebate
-    bootstrap-servers: 192.168.181.128:9094,192.168.181.128:9095
+    bootstrap-servers: 1.94.101.241:9093,1.94.101.241:9095
     producer: # 生产者
       retries: 3 # 设置大于0的值，则客户端会将发送失败的记录重新发送
       batch-size: 16384

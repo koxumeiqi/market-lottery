@@ -7,4 +7,9 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface IAwardDao extends BaseMapper<Award> {
+
+    String queryAwardConfig(Integer awardId);
+
+    String queryAwardKey(Integer awardId);
+
 }

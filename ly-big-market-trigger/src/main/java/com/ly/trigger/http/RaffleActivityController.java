@@ -12,6 +12,7 @@ import com.ly.domain.activity.model.entity.UserRaffleOrderEntity;
 import com.ly.domain.activity.service.IRaffleActivityAccountQuotaService;
 import com.ly.domain.activity.service.IRaffleActivityPartakeService;
 import com.ly.domain.activity.service.armory.IActivityArmory;
+import com.ly.domain.award.model.entity.DistributeAwardEntity;
 import com.ly.domain.award.model.entity.UserAwardRecordEntity;
 import com.ly.domain.award.model.vo.AwardStateVO;
 import com.ly.domain.award.service.IAwardService;
@@ -128,9 +129,10 @@ public class RaffleActivityController implements IRaffleActivityService {
                     .awardTitle(raffleAwardEntity.getAwardDesc())
                     .awardTime(new Date())
                     .awardState(AwardStateVO.create)
+                    .awardConfig(raffleAwardEntity.getAwardConfig())
                     .build();
             awardService.saveUserAwardRecord(userAwardRecord);
-            // 5. 返回结果
+                    // 5. 返回结果
             return Response.<ActivityDrawResponseDTO>builder()
                     .code(ResponseCode.SUCCESS.getCode())
                     .info(ResponseCode.SUCCESS.getInfo())

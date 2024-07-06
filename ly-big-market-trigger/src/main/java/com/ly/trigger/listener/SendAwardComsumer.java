@@ -25,7 +25,7 @@ public class SendAwardComsumer {
     @Resource
     private IAwardService awardService;
 
-    @KafkaListener(topics = "${spring.kafka.topic.send_award}")
+    @KafkaListener(topics = {"send_award"})
     public void sendAward(String message, Acknowledgment ack) {
         try {
             log.info("监听用户奖品发送消息 topic: {} message: {}", topic, message);

@@ -26,7 +26,7 @@ public class UserCreditRandomAward implements IDistributeAward {
 
     @Override
     public void giveOutPrizes(DistributeAwardEntity distributeAwardEntity) {
-// 奖品ID
+        // 奖品ID
         Integer awardId = distributeAwardEntity.getAwardId();
         // 查询奖品ID 「优先走透传的随机积分奖品配置」
         String awardConfig = distributeAwardEntity.getAwardConfig();

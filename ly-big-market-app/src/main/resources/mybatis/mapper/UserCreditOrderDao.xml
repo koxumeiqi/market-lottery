@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ly.infrastructure.persistent.dao.IUserCreditOrderDao">
+
+        <insert id="insert" parameterType="com.ly.infrastructure.persistent.po.UserCreditOrder">
+            insert into user_credit_order(user_id, order_id, trade_name, trade_type, trade_amount, out_business_no,
+                                          create_time, update_time)
+            values (#{userId}, #{orderId}, #{tradeName}, #{tradeType}, #{tradeAmount}, #{outBusinessNo}, now(), now())
+        </insert>
+
+</mapper>

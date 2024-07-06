@@ -22,6 +22,7 @@ import com.ly.types.exception.AppException;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RBlockingQueue;
 import org.redisson.api.RDelayedQueue;
+import org.redisson.api.RLock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
@@ -178,32 +179,41 @@ public class ActivityRepository implements IActivityRepository {
         raffleActivityAccountDay.setDayCount(createOrderAggregate.getDayCount());
         raffleActivityAccountDay.setDayCountSurplus(createOrderAggregate.getDayCount());
 
-        // 进行路由 - 使得路由组件里的 ThreadLocal 里是有分库信息的
-        routerStrategy.doRouter(createOrderAggregate.getUserId());
+        RLock lock = redisService.getLock(Constants.RedisKey.ACTIVITY_ACCOUNT_LOCK + createOrderAggregate.getUserId() + Constants.UNDERLINE + createOrderAggregate.getActivityId());
+        try {
+            // 进行路由 - 使得路由组件里的 ThreadLocal 里是有分库信息的
+            routerStrategy.doRouter(createOrderAggregate.getUserId());
+            lock.lock(3, TimeUnit.SECONDS);
+            // 手动事务开启
+            return transactionTemplate.execute(status -> {
+                try {
+                    // 写入订单
+                    raffleActivityOrderMapper.insert(raffleActivityOrder);
+                    // 更新账户
+                    RaffleActivityAccount raffleActivityAccountRes = raffleActivityAccountMapper.queryAccountByUserId(raffleActivityAccount);
+                    if (null == raffleActivityAccountRes) {
+                        raffleActivityAccountMapper.insert(raffleActivityAccount);
+                    } else {
+                        raffleActivityAccountMapper.updateAccountQuota(raffleActivityAccount);
+                    }
 
-        // 手动事务开启
-        return transactionTemplate.execute(status -> {
-            try {
-                // 写入订单
-                raffleActivityOrderMapper.insert(raffleActivityOrder);
-                // 更新账户
-                int cnt = raffleActivityAccountMapper.updateAccountQuota(raffleActivityAccount);
-                if (cnt == 0) raffleActivityAccountMapper.insert(raffleActivityAccount);
+                    // 4. 更新账户 - 月
+                    raffleActivityAccountMonthDao.addAccountQuota(raffleActivityAccountMonth);
+                    // 5. 更新账户 - 日
+                    raffleActivityAccountDayDao.addAccountQuota(raffleActivityAccountDay);
 
-                // 4. 更新账户 - 月
-                raffleActivityAccountMonthDao.addAccountQuota(raffleActivityAccountMonth);
-                // 5. 更新账户 - 日
-                raffleActivityAccountDayDao.addAccountQuota(raffleActivityAccountDay);
-
-                return true;
-            } catch (DuplicateKeyException e) {
-                status.setRollbackOnly();
-                log.error("写入订单记录，唯一索引冲突 userId: {} activityId: {} sku: {}", activityOrderEntity.getUserId(), activityOrderEntity.getActivityId(), activityOrderEntity.getSku(), e);
-                throw new AppException(ResponseCode.INDEX_DUP.getCode());
-            } finally {
-                routerStrategy.clear();
-            }
-        });
+                    return true;
+                } catch (DuplicateKeyException e) {
+                    status.setRollbackOnly();
+                    log.error("写入订单记录，唯一索引冲突 userId: {} activityId: {} sku: {}", activityOrderEntity.getUserId(), activityOrderEntity.getActivityId(), activityOrderEntity.getSku(), e);
+                    throw new AppException(ResponseCode.INDEX_DUP.getCode());
+                } finally {
+                    routerStrategy.clear();
+                }
+            });
+        } finally {
+            lock.unlock();
+        }
     }
 
     @Override

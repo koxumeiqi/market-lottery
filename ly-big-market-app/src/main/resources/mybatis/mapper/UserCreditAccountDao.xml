@@ -23,4 +23,9 @@
             available_amount = available_amount + #{availableAmount}
         where user_id = #{userId}
     </update>
+    <select id="queryUserCreditAccount" resultType="com.ly.infrastructure.persistent.po.UserCreditAccount">
+        select user_id, total_amount, available_amount, account_status
+        from user_credit_account
+        where user_id = #{userId}
+    </select>
 </mapper>

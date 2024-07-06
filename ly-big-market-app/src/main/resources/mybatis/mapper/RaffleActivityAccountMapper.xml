@@ -5,21 +5,22 @@
 <mapper namespace="com.ly.infrastructure.persistent.dao.RaffleActivityAccountMapper">
 
     <resultMap id="BaseResultMap" type="com.ly.infrastructure.persistent.po.RaffleActivityAccount">
-            <id property="id" column="id" jdbcType="BIGINT"/>
-            <result property="userId" column="user_id" jdbcType="VARCHAR"/>
-            <result property="activityId" column="activity_id" jdbcType="BIGINT"/>
-            <result property="totalCount" column="total_count" jdbcType="INTEGER"/>
-            <result property="totalCountSurplus" column="total_count_surplus" jdbcType="INTEGER"/>
-            <result property="dayCount" column="day_count" jdbcType="INTEGER"/>
-            <result property="dayCountSurplus" column="day_count_surplus" jdbcType="INTEGER"/>
-            <result property="monthCount" column="month_count" jdbcType="INTEGER"/>
-            <result property="monthCountSurplus" column="month_count_surplus" jdbcType="INTEGER"/>
-            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
-            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="userId" column="user_id" jdbcType="VARCHAR"/>
+        <result property="activityId" column="activity_id" jdbcType="BIGINT"/>
+        <result property="totalCount" column="total_count" jdbcType="INTEGER"/>
+        <result property="totalCountSurplus" column="total_count_surplus" jdbcType="INTEGER"/>
+        <result property="dayCount" column="day_count" jdbcType="INTEGER"/>
+        <result property="dayCountSurplus" column="day_count_surplus" jdbcType="INTEGER"/>
+        <result property="monthCount" column="month_count" jdbcType="INTEGER"/>
+        <result property="monthCountSurplus" column="month_count_surplus" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,user_id,activity_id,
+        id
+        ,user_id,activity_id,
         total_count,total_count_surplus,day_count,
         day_count_surplus,month_count,month_count_surplus,
         create_time,update_time
@@ -64,6 +65,19 @@
     </update>
     <select id="queryActivityAccountByUserId"
             resultType="com.ly.infrastructure.persistent.po.RaffleActivityAccount">
+        select user_id,
+               activity_id,
+               total_count,
+               total_count_surplus,
+               day_count,
+               day_count_surplus,
+               month_count,
+               month_count_surplus
+        from raffle_activity_account
+        where user_id = #{userId}
+          and activity_id = #{activityId}
+    </select>
+    <select id="queryAccountByUserId" resultType="com.ly.infrastructure.persistent.po.RaffleActivityAccount">
         select user_id,
                activity_id,
                total_count,

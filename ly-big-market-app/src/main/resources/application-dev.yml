@@ -24,6 +24,7 @@ spring:
       activity_sku_stock_zero: activity_sku_stock_zero
       # 用户行为返利领域事件
       send_rebate: send_rebate
+      credit_adjust_success: credit_adjust_success
       # 1.94.101.241:9093,
     bootstrap-servers: 1.94.101.241:9093,1.94.101.241:9095
     producer: # 生产者

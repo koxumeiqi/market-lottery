@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 import lombok.Data;
@@ -73,6 +74,11 @@ public class RaffleActivityOrder implements Serializable {
      * 月次数
      */
     private Integer monthCount;
+
+    /**
+     * 支付金额
+     */
+    private BigDecimal payAmount;
 
     /**
      * 订单状态（complete）

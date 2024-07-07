@@ -1,6 +1,7 @@
 package com.ly.domain.activity.service;
 
 import com.ly.domain.activity.model.entity.ActivityAccountEntity;
+import com.ly.domain.activity.model.entity.DeliveryOrderEntity;
 import com.ly.domain.activity.model.entity.SkuRechargeEntity;
 
 /**
@@ -38,5 +39,7 @@ public interface IRaffleActivityAccountQuotaService {
     ActivityAccountEntity queryActivityAccountEntity(Long activityId, String userId);
 
     Integer queryRaffleActivityAccountPartakeCount(Long activityId, String userId);
+
+    void updateOrder(DeliveryOrderEntity deliveryOrderEntity);
 
 }

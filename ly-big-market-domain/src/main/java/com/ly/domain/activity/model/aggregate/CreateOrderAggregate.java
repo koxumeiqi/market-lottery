@@ -1,6 +1,7 @@
 package com.ly.domain.activity.model.aggregate;
 
 import com.ly.domain.activity.model.entity.ActivityOrderEntity;
+import com.ly.domain.activity.model.vo.OrderStateVO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -41,6 +42,10 @@ public class CreateOrderAggregate {
      * 活动订单实体
      */
     private ActivityOrderEntity activityOrderEntity;
+
+    public void setOrderState(OrderStateVO orderState) {
+        this.activityOrderEntity.setState(orderState);
+    }
 
 
 }

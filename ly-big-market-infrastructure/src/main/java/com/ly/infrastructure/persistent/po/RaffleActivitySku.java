@@ -4,15 +4,17 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
+
 import lombok.Data;
 
 /**
- * 
  * @TableName raffle_activity_sku
  */
-@TableName(value ="raffle_activity_sku")
+@TableName(value = "raffle_activity_sku")
 @Data
 public class RaffleActivitySku implements Serializable {
     /**
@@ -45,6 +47,11 @@ public class RaffleActivitySku implements Serializable {
      * 剩余库存
      */
     private Integer stockCountSurplus;
+
+    /**
+     * 商品金额【积分】
+     */
+    private BigDecimal productAmount;
 
     /**
      * 创建时间

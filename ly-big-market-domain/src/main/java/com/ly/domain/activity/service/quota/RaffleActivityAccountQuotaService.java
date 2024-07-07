@@ -91,4 +91,9 @@ public class RaffleActivityAccountQuotaService extends AbstractRaffleActivityAcc
         return repository.queryRaffleActivityAccountPartakeCount(activityId, userId);
     }
 
+    @Override
+    public void updateOrder(DeliveryOrderEntity deliveryOrderEntity) {
+        repository.updateOrder(deliveryOrderEntity);
+    }
+
 }

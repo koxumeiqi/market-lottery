@@ -1,5 +1,6 @@
 package com.ly.domain.activity.model.entity;
 
+import com.ly.domain.activity.model.vo.OrderTradeTypeVO;
 import lombok.Data;
 
 /**
@@ -22,5 +23,8 @@ public class SkuRechargeEntity {
      * 外部业务单号 - 幂等 - 外部传递，防不会多次充值
      */
     private String outBusinessNo;
+
+    /** 订单交易类型；支付类型 or 不支付 */
+    private OrderTradeTypeVO orderTradeType = OrderTradeTypeVO.rebate_no_pay_trade;
 
 }

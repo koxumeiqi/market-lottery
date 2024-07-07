@@ -56,4 +56,10 @@ public interface IActivityRepository {
 
     Integer queryRaffleActivityAccountPartakeCount(Long activityId, String userId);
 
+    void doSaveCreditPayOrder(CreateOrderAggregate createQuotaOrderAggregate);
+
+    void doSaveNoPayOrder(CreateOrderAggregate createQuotaOrderAggregate);
+
+    void updateOrder(DeliveryOrderEntity deliveryOrderEntity);
+
 }

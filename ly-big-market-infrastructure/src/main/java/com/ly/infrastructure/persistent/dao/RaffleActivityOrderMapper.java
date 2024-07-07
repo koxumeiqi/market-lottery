@@ -23,6 +23,11 @@ public interface RaffleActivityOrderMapper extends BaseMapper<RaffleActivityOrde
     @DBRouter
     List<RaffleActivityOrder> queryRaffleActivityOrderByUserId(String userId);
 
+    @DBRouter
+    RaffleActivityOrder queryRaffleActivityOrder(RaffleActivityOrder raffleActivityOrderReq);
+
+    int updateOrderCompleted(RaffleActivityOrder raffleActivityOrderReq);
+
 }
 
 

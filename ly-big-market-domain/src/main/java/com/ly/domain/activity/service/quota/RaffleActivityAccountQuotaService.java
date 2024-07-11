@@ -7,17 +7,20 @@ import com.ly.domain.activity.model.vo.ActivitySkuStockKeyVO;
 import com.ly.domain.activity.model.vo.OrderStateVO;
 import com.ly.domain.activity.repository.IActivityRepository;
 import com.ly.domain.activity.service.IRaffleActivitySkuStockService;
+import com.ly.domain.activity.service.quota.policy.ITradePolicy;
 import com.ly.domain.activity.service.quota.rule.factory.ActionChainFactory;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.Map;
 
 @Service
 public class RaffleActivityAccountQuotaService extends AbstractRaffleActivityAccountQuota implements IRaffleActivitySkuStockService {
 
-    public RaffleActivityAccountQuotaService(ActionChainFactory actionChainFactory, IActivityRepository repository) {
-        super(actionChainFactory, repository);
+
+    public RaffleActivityAccountQuotaService(IActivityRepository activityRepository, ActionChainFactory actionChainFactory, Map<String, ITradePolicy> tradePolicyGroup) {
+        super(activityRepository, actionChainFactory, tradePolicyGroup);
     }
 
     @Override

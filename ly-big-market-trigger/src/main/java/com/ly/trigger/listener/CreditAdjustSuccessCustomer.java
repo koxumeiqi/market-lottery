@@ -11,6 +11,7 @@ import com.ly.types.exception.AppException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -30,7 +31,7 @@ public class CreditAdjustSuccessCustomer {
     private IRaffleActivityAccountQuotaService raffleActivityAccountQuotaService;
 
     @KafkaListener(topics = {"credit_adjust_success"})
-    public void listener(String message) {
+    public void listener(String message, Acknowledgment acknowledgment) {
         try {
             log.info("监听积分账户调整成功消息，进行交易商品发货 topic: {} message: {}", topic, message);
             BaseEvent.EventMessage<CreditAdjustSuccessMessageEvent.CreditAdjustSuccessMessage> eventMessage = JSON.parseObject(message, new TypeReference<BaseEvent.EventMessage<CreditAdjustSuccessMessageEvent.CreditAdjustSuccessMessage>>() {
@@ -51,6 +52,8 @@ public class CreditAdjustSuccessCustomer {
         } catch (Exception e) {
             log.error("监听积分账户调整成功消息，进行交易商品发货失败 topic: {} message: {}", topic, message, e);
             throw e;
+        } finally {
+            acknowledgment.acknowledge();
         }
     }
 

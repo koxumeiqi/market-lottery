@@ -1,6 +1,7 @@
 package com.ly.test.domain.activity;
 
 import com.ly.domain.activity.model.entity.SkuRechargeEntity;
+import com.ly.domain.activity.model.vo.OrderTradeTypeVO;
 import com.ly.domain.activity.service.IRaffleActivityAccountQuotaService;
 import com.ly.domain.activity.service.armory.IActivityArmory;
 import com.ly.types.exception.AppException;
@@ -31,7 +32,7 @@ public class RaffleActivityAccountQuotaServiceTest {
     @Resource
     private IActivityArmory activityArmory;
 
-    @Before
+//    @Before
     public void setUp() {
         log.info("装配活动：{}", activityArmory.assembleActivitySku(9011L));
     }
@@ -70,6 +71,18 @@ public class RaffleActivityAccountQuotaServiceTest {
         }
 
         new CountDownLatch(1).await();
+    }
+
+    @Test
+    public void test_createPayRechargeOrder() {
+        SkuRechargeEntity skuRechargeEntity = new SkuRechargeEntity();
+        skuRechargeEntity.setUserId("myz");
+        skuRechargeEntity.setOrderTradeType(OrderTradeTypeVO.credit_pay_trade);
+        skuRechargeEntity.setSku(9011L);
+        // outBusinessNo 作为幂等仿重使用，同一个业务单号2次使用会抛出索引冲突 Duplicate entry '700091009111' for key 'uq_out_business_no' 确保唯一性。
+        skuRechargeEntity.setOutBusinessNo(RandomStringUtils.randomNumeric(12));
+        String outBusinessCode = raffleActivityAccountQuotaService.createOrder(skuRechargeEntity);
+        log.warn("订单id：{}", outBusinessCode);
     }
 
 }

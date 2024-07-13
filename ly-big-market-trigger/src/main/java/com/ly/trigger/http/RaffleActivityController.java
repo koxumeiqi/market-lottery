@@ -294,6 +294,7 @@ public class RaffleActivityController implements IRaffleActivityService {
                 skuProductResponseDTO.setStockCountSurplus(skuProductEntity.getStockCountSurplus());
                 skuProductResponseDTO.setProductAmount(skuProductEntity.getProductAmount());
                 skuProductResponseDTO.setActivityCount(activityCount);
+                skuProductResponseDTO.setActivityId(activityId);
                 skuProductResponseDTOS.add(skuProductResponseDTO);
             }
 

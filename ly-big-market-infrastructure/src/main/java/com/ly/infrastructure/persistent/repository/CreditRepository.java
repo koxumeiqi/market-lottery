@@ -85,11 +85,12 @@ public class CreditRepository implements ICreditRepository {
         task.setState(taskEntity.getState().getCode());
 
         RLock lock = redisService.getLock(Constants.RedisKey.USER_CREDIT_ACCOUNT_LOCK + userId + Constants.UNDERLINE + creditOrderEntity.getOutBusinessNo());
+        int flag = 1;
         try {
             lock.lock(3, TimeUnit.SECONDS);
             routerStrategy.doRouter(userId);
             // 编程式事务
-            transactionTemplate.execute(status -> {
+            flag = transactionTemplate.execute(status -> {
                 try {
                     // 1. 保存账户积分
                     UserCreditAccount userCreditAccount = userCreditAccountDao.queryUserCreditAccount(userCreditAccountReq);
@@ -102,29 +103,33 @@ public class CreditRepository implements ICreditRepository {
                     userCreditOrderDao.insert(userCreditOrderReq);
                     // 3. 写入任务
                     taskDao.insert(task);
+                    return 1;
                 } catch (DuplicateKeyException e) {
                     status.setRollbackOnly();
                     log.error("调整账户积分额度异常，唯一索引冲突 userId:{} orderId:{}", userId, creditOrderEntity.getOrderId(), e);
+                    return 0;
                 } catch (Exception e) {
                     status.setRollbackOnly();
                     log.error("调整账户积分额度失败 userId:{} orderId:{}", userId, creditOrderEntity.getOrderId(), e);
+                    return 0;
                 }
-                return 1;
             });
         } finally {
             routerStrategy.clear();
             lock.unlock();
         }
 
-        try {
-            // 发送消息【在事务外执行，如果失败还有任务补偿】
-            eventPublisher.publish(task.getTopic(), task.getMessage());
-            // 更新数据库记录，task 任务表
-            taskDao.updateTaskSendMessageSuccess(task);
-            log.info("调整账户积分记录，发送MQ消息完成 userId: {} orderId:{} topic: {}", userId, creditOrderEntity.getOrderId(), task.getTopic());
-        } catch (Exception e) {
-            log.error("调整账户积分记录，发送MQ消息失败 userId: {} topic: {}", userId, task.getTopic());
-            taskDao.updateTaskSendMessageFail(task);
+        if (flag == 1) {
+            try {
+                // 发送消息【在事务外执行，如果失败还有任务补偿】
+                eventPublisher.publish(task.getTopic(), task.getMessage());
+                // 更新数据库记录，task 任务表
+                taskDao.updateTaskSendMessageSuccess(task);
+                log.info("调整账户积分记录，发送MQ消息完成 userId: {} orderId:{} topic: {}", userId, creditOrderEntity.getOrderId(), task.getTopic());
+            } catch (Exception e) {
+                log.error("调整账户积分记录，发送MQ消息失败 userId: {} topic: {}", userId, task.getTopic());
+                taskDao.updateTaskSendMessageFail(task);
+            }
         }
 
     }

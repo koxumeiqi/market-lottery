@@ -1,12 +1,18 @@
 package com.ly.domain.activity.model.entity;
 
 import com.ly.domain.activity.model.vo.OrderTradeTypeVO;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 活动重置实体
  */
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class SkuRechargeEntity {
 
     /**

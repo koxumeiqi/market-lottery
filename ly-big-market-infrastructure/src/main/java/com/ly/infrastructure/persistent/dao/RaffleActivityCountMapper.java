@@ -13,6 +13,8 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface RaffleActivityCountMapper extends BaseMapper<RaffleActivityCount> {
 
+    RaffleActivityCount queryRaffleActivityCountByActivityCountId(Long activityCountId);
+
 }
 
 

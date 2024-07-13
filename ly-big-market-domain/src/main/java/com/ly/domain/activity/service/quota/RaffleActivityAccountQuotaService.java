@@ -53,6 +53,7 @@ public class RaffleActivityAccountQuotaService extends AbstractRaffleActivityAcc
         orderEntity.setOrderId(RandomStringUtils.randomNumeric(12));
         orderEntity.setOrderTime(new Date());
         orderEntity.setState(OrderStateVO.completed);
+        orderEntity.setPayAmount(skuEntity.getProductAmount());
 
         createOrderAggr.setActivityOrderEntity(orderEntity);
         return createOrderAggr;

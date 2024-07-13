@@ -1,5 +1,6 @@
 package com.ly.domain.credit.service;
 
+import com.ly.domain.credit.model.entity.CreditAccountEntity;
 import com.ly.domain.credit.model.entity.TradeEntity;
 
 /**
@@ -13,5 +14,7 @@ public interface ICreditAdjustService {
      * @return 单号
      */
     String createOrder(TradeEntity tradeEntity);
+
+    CreditAccountEntity queryUserCreditAccount(String userId);
 
 }

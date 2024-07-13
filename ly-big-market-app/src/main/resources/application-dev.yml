@@ -26,7 +26,7 @@ spring:
       send_rebate: send_rebate
       credit_adjust_success: credit_adjust_success
       # 1.94.101.241:9093,
-    bootstrap-servers: 1.94.101.241:9093,1.94.101.241:9095
+    bootstrap-servers: 1.94.101.241:9095
     producer: # 生产者
       retries: 3 # 设置大于0的值，则客户端会将发送失败的记录重新发送
       batch-size: 16384

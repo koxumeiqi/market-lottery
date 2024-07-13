@@ -25,7 +25,7 @@ public abstract class AbstractRaffleActivityAccountQuota extends RaffleActivityA
 
 
     @Override
-    public String createOrder(SkuRechargeEntity skuRechargeEntity) {
+    public UnpaidActivityOrderEntity createOrder(SkuRechargeEntity skuRechargeEntity) {
         // 参数校验
         String userId = skuRechargeEntity.getUserId();
         Long sku = skuRechargeEntity.getSku();
@@ -33,6 +33,11 @@ public abstract class AbstractRaffleActivityAccountQuota extends RaffleActivityA
         if (null == sku || StringUtils.isBlank(userId) || StringUtils.isBlank(outBusinessNo)) {
             throw new AppException(ResponseCode.ILLEGAL_PARAMETER.getCode(), ResponseCode.ILLEGAL_PARAMETER.getInfo());
         }
+
+        // 2. 查询未支付订单「一个月以内的未支付订单」
+        UnpaidActivityOrderEntity unpaidCreditOrder = repository.queryUnpaidActivityOrder(skuRechargeEntity);
+        if (null != unpaidCreditOrder) return unpaidCreditOrder;
+
         // 1. 查找活动相关信息：活动信息、活动次数信息
         ActivitySkuEntity skuEntity = this.queryActivitySku(sku);
         ActivityEntity activityEntity = this.queryRaffleActivityByActivityId(skuEntity.getActivityId());
@@ -45,7 +50,15 @@ public abstract class AbstractRaffleActivityAccountQuota extends RaffleActivityA
         // 6. 交易策略 - 【积分兑换，支付类订单】【返利无支付交易订单，直接充值到账】【订单状态变更交易类型策略】
         ITradePolicy tradePolicy = tradePolicyGroup.get(skuRechargeEntity.getOrderTradeType().getCode());
         tradePolicy.trade(createOrderAggregate);
-        return createOrderAggregate.getActivityOrderEntity().getOutBusinessNo();
+
+        // 7. 返回订单信息
+        ActivityOrderEntity activityOrderEntity = createOrderAggregate.getActivityOrderEntity();
+        return UnpaidActivityOrderEntity.builder()
+                .userId(userId)
+                .orderId(activityOrderEntity.getOrderId())
+                .outBusinessNo(activityOrderEntity.getOutBusinessNo())
+                .payAmount(activityOrderEntity.getPayAmount())
+                .build();
     }
 
     protected abstract boolean doSaveOrder(CreateOrderAggregate createOrderAggregate);

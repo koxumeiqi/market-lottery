@@ -5,18 +5,26 @@
 <mapper namespace="com.ly.infrastructure.persistent.dao.RaffleActivityCountMapper">
 
     <resultMap id="BaseResultMap" type="com.ly.infrastructure.persistent.po.RaffleActivityCount">
-            <id property="id" column="id" jdbcType="BIGINT"/>
-            <result property="activityCountId" column="activity_count_id" jdbcType="BIGINT"/>
-            <result property="totalCount" column="total_count" jdbcType="INTEGER"/>
-            <result property="dayCount" column="day_count" jdbcType="INTEGER"/>
-            <result property="monthCount" column="month_count" jdbcType="INTEGER"/>
-            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
-            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="activityCountId" column="activity_count_id" jdbcType="BIGINT"/>
+        <result property="totalCount" column="total_count" jdbcType="INTEGER"/>
+        <result property="dayCount" column="day_count" jdbcType="INTEGER"/>
+        <result property="monthCount" column="month_count" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,activity_count_id,total_count,
+        id
+        ,activity_count_id,total_count,
         day_count,month_count,create_time,
         update_time
     </sql>
+    <select id="queryRaffleActivityCountByActivityCountId"
+            resultType="com.ly.infrastructure.persistent.po.RaffleActivityCount">
+        select activity_count_id, total_count, day_count, month_count
+        from raffle_activity_count
+        where activity_count_id = #{activityCountId}
+    </select>
+
 </mapper>

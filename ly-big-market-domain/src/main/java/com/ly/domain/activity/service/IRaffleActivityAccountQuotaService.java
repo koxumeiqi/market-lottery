@@ -3,6 +3,7 @@ package com.ly.domain.activity.service;
 import com.ly.domain.activity.model.entity.ActivityAccountEntity;
 import com.ly.domain.activity.model.entity.DeliveryOrderEntity;
 import com.ly.domain.activity.model.entity.SkuRechargeEntity;
+import com.ly.domain.activity.model.entity.UnpaidActivityOrderEntity;
 
 /**
  * 抽奖活动订单接口
@@ -18,7 +19,7 @@ public interface IRaffleActivityAccountQuotaService {
      * @param skuRechargeEntity 活动商品充值实体对象
      * @return 活动ID
      */
-    String createOrder(SkuRechargeEntity skuRechargeEntity);
+    UnpaidActivityOrderEntity createOrder(SkuRechargeEntity skuRechargeEntity);
 
     /**
      * 查询活动参与次数

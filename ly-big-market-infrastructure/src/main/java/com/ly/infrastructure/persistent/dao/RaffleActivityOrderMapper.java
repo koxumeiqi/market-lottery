@@ -28,6 +28,9 @@ public interface RaffleActivityOrderMapper extends BaseMapper<RaffleActivityOrde
 
     int updateOrderCompleted(RaffleActivityOrder raffleActivityOrderReq);
 
+    @DBRouter
+    RaffleActivityOrder queryUnpaidActivityOrder(RaffleActivityOrder raffleActivityOrderReq);
+
 }
 
 

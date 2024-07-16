@@ -17,7 +17,7 @@ import java.util.Date;
 @Component
 public class SendAwardMessageEvent extends BaseEvent<SendAwardMessageEvent.SendAwardMessage> {
 
-    @Value("${spring.kafka.topic.send_award}")
+    @Value("${spring.rabbitmq.topic.send_award}")
     private String topic;
 
     @Override

@@ -14,10 +14,9 @@ import com.ly.types.enums.ResponseCode;
 import com.ly.types.event.BaseEvent;
 import com.ly.types.exception.AppException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.annotation.Queue;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -33,14 +32,14 @@ public class RebateMessageCustomer {
     @Resource
     private IRaffleActivityAccountQuotaService raffleActivityAccountQuotaService;
 
-    @Value("${spring.kafka.topic.send_rebate}")
+    @Value("${spring.rabbitmq.topic.send_rebate}")
     private String topic;
 
     @Resource
     private ICreditAdjustService creditAdjustService;
 
-    @KafkaListener(topics = {"send_rebate"})
-    public void rebateMessage(String message, Acknowledgment ack) {
+    @RabbitListener(queuesToDeclare = @Queue(value = "${spring.rabbitmq.topic.send_rebate}"))
+    public void rebateMessage(String message) {
         try {
             log.info("监听用户行为返利消息 topic: {} message: {}", topic, message);
             // 1. 转换消息
@@ -76,7 +75,7 @@ public class RebateMessageCustomer {
             log.error("监听用户行为返利消息，消费失败 topic: {} message: {}", topic, message, e);
             throw e;
         } finally {
-            ack.acknowledge();
+//            ack.acknowledge();
         }
     }
 

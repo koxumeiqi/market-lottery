@@ -9,9 +9,9 @@ import com.ly.types.enums.ResponseCode;
 import com.ly.types.event.BaseEvent;
 import com.ly.types.exception.AppException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.annotation.Queue;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -25,13 +25,13 @@ import javax.annotation.Resource;
 @Component
 public class CreditAdjustSuccessCustomer {
 
-    @Value("${spring.kafka.topic.credit_adjust_success}")
+    @Value("${spring.rabbitmq.topic.credit_adjust_success}")
     private String topic;
     @Resource
     private IRaffleActivityAccountQuotaService raffleActivityAccountQuotaService;
 
-    @KafkaListener(topics = {"credit_adjust_success"})
-    public void listener(String message, Acknowledgment acknowledgment) {
+    @RabbitListener(queuesToDeclare = @Queue(value = "${spring.rabbitmq.topic.credit_adjust_success}"))
+    public void listener(String message) {
         try {
             log.info("监听积分账户调整成功消息，进行交易商品发货 topic: {} message: {}", topic, message);
             BaseEvent.EventMessage<CreditAdjustSuccessMessageEvent.CreditAdjustSuccessMessage> eventMessage = JSON.parseObject(message, new TypeReference<BaseEvent.EventMessage<CreditAdjustSuccessMessageEvent.CreditAdjustSuccessMessage>>() {
@@ -53,7 +53,7 @@ public class CreditAdjustSuccessCustomer {
             log.error("监听积分账户调整成功消息，进行交易商品发货失败 topic: {} message: {}", topic, message, e);
             throw e;
         } finally {
-            acknowledgment.acknowledge();
+//            acknowledgment.acknowledge();
         }
     }
 

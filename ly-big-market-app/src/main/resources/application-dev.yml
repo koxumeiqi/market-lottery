@@ -13,35 +13,49 @@ thread:
         block-queue-size: 5000
         policy: CallerRunsPolicy
 
-
 spring:
-  kafka:
+  rabbitmq:
+    addresses: 1.94.101.241
+    port: 5672
+    username: admin
+    password: admin
+    listener:
+      simple:
+        prefetch: 1 # 每次投递n个消息，消费完在投递n个
     topic:
-      # 奖品发放领域事件
-      send_award: send_award
-      # 活动库存为 0，最终一致性
       activity_sku_stock_zero: activity_sku_stock_zero
-      # 用户行为返利领域事件
+      send_award: send_award
       send_rebate: send_rebate
       credit_adjust_success: credit_adjust_success
-      # 1.94.101.241:9093,
-    bootstrap-servers: 1.94.101.241:9093,1.94.101.241:9095
-    producer: # 生产者
-      retries: 3 # 设置大于0的值，则客户端会将发送失败的记录重新发送
-      batch-size: 16384
-      buffer-memory: 33554432
-      # acks: all
-      # 指定消息key和消息体的编解码方式
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.apache.kafka.common.serialization.StringSerializer
-    consumer:
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      group-id: default-group
-      enable-auto-commit: false
-      auto-offset-reset: earliest
-    listener:
-      ack-mode: manual_immediate
+
+#spring:
+#  kafka:
+#    topic:
+#      # 奖品发放领域事件
+#      send_award: send_award
+#      # 活动库存为 0，最终一致性
+#      activity_sku_stock_zero: activity_sku_stock_zero
+#      # 用户行为返利领域事件
+#      send_rebate: send_rebate
+#      credit_adjust_success: credit_adjust_success
+#      # 1.94.101.241:9093,
+#    bootstrap-servers: 1.94.101.241:9093,1.94.101.241:9095
+#    producer: # 生产者
+#      retries: 3 # 设置大于0的值，则客户端会将发送失败的记录重新发送
+#      batch-size: 16384
+#      buffer-memory: 33554432
+#      # acks: all
+#      # 指定消息key和消息体的编解码方式
+#      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+#      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+#    consumer:
+#      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+#      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+#      group-id: default-group
+#      enable-auto-commit: false
+#      auto-offset-reset: earliest
+#    listener:
+#      ack-mode: manual_immediate
       # 当每一条记录被消费者监听器（ListenerConsumer）处理之后提交
       # RECORD
       # 当每一批poll()的数据被消费者监听器（ListenerConsumer）处理之后提交

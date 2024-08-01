@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Repository
 @Slf4j
@@ -516,12 +517,14 @@ public class ActivityRepository implements IActivityRepository {
         RaffleActivityAccountMonth raffleActivityAccountMonth = raffleActivityAccountMonthDao.queryActivityAccountMonthByUserId(RaffleActivityAccountMonth.builder()
                 .activityId(activityId)
                 .userId(userId)
+                .month(RaffleActivityAccountMonth.currentMonth())
                 .build());
 
         // 3. 查询日账户额度
         RaffleActivityAccountDay raffleActivityAccountDay = raffleActivityAccountDayDao.queryActivityAccountDayByUserId(RaffleActivityAccountDay.builder()
                 .activityId(activityId)
                 .userId(userId)
+                .day(RaffleActivityAccountDay.currentDay())
                 .build());
 
         // 组装对象
@@ -789,6 +792,17 @@ public class ActivityRepository implements IActivityRepository {
 
         }
         return skuProductEntities;
+    }
+
+    @Override
+    public List<ActivityListEntity> queryActivityListEntityList() {
+        List<RaffleActivity> raffleActivities = raffleActivityMapper.queryActivityList();
+        return raffleActivities.stream()
+                .map(raffleActivity -> ActivityListEntity.builder()
+                        .activityId(raffleActivity.getActivityId())
+                        .activityName(raffleActivity.getActivityName())
+                        .build())
+                .collect(Collectors.toList());
     }
 
 }

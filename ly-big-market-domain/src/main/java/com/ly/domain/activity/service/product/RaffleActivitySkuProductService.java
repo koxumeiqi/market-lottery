@@ -1,5 +1,7 @@
 package com.ly.domain.activity.service.product;
 
+import com.ly.domain.activity.model.entity.ActivityListEntity;
+import com.ly.domain.activity.model.entity.ActivitySkuEntity;
 import com.ly.domain.activity.model.entity.SkuProductEntity;
 import com.ly.domain.activity.repository.IActivityRepository;
 import com.ly.domain.activity.service.IRaffleActivitySkuProductService;
@@ -22,6 +24,11 @@ public class RaffleActivitySkuProductService implements IRaffleActivitySkuProduc
     @Override
     public List<SkuProductEntity> querySkuProductEntityListByActivityId(Long activityId) {
         return repository.querySkuProductEntityListByActivityId(activityId);
+    }
+
+    @Override
+    public List<ActivityListEntity> queryActivitySkuList() {
+        return repository.queryActivityListEntityList();
     }
 
 }

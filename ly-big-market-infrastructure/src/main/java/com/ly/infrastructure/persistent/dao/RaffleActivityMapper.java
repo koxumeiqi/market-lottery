@@ -4,6 +4,8 @@ import com.ly.infrastructure.persistent.po.RaffleActivity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 /**
 * @author myz03
 * @description 针对表【raffle_activity(抽奖活动表)】的数据库操作Mapper
@@ -16,6 +18,8 @@ public interface RaffleActivityMapper extends BaseMapper<RaffleActivity> {
     Long queryStrategyIdByActivityId(Long activityId);
 
     Long queryActivityIdByStrategyId(Long strategyId);
+
+    List<RaffleActivity> queryActivityList();
 
 }
 

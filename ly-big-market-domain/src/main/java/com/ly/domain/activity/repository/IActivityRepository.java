@@ -66,4 +66,6 @@ public interface IActivityRepository {
 
     List<SkuProductEntity> querySkuProductEntityListByActivityId(Long activityId);
 
+    List<ActivityListEntity> queryActivityListEntityList();
+
 }

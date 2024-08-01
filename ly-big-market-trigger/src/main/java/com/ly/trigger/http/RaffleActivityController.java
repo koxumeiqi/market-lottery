@@ -2,6 +2,8 @@ package com.ly.trigger.http;
 
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.ly.api.IRaffleActivityService;
 import com.ly.api.dto.*;
 import com.ly.domain.activity.model.entity.*;
@@ -369,6 +371,39 @@ public class RaffleActivityController implements IRaffleActivityService {
                     .code(ResponseCode.UN_ERROR.getCode())
                     .info(ResponseCode.UN_ERROR.getInfo())
                     .data(false)
+                    .build();
+        }
+    }
+
+    @RequestMapping(value = "query_activity_list", method = RequestMethod.GET)
+    @Override
+    public Response<List<ActivityListResponseDTO>> queryActivityList() {
+        try {
+            List<ActivityListEntity> activityList = raffleActivitySkuProductService.queryActivitySkuList();
+            log.info("获取到所有抽奖活动列表 activityList:{}", JSONObject.toJSONString(activityList));
+            if (CollectionUtils.isNotEmpty(activityList)) {
+                List<ActivityListResponseDTO> activityListResponseDTOS = new ArrayList<>();
+                for (ActivityListEntity activityListEntity : activityList) {
+                    ActivityListResponseDTO activityListResponseDTO = new ActivityListResponseDTO();
+                    activityListResponseDTO.setActivityId(activityListEntity.getActivityId());
+                    activityListResponseDTO.setActivityName(activityListEntity.getActivityName());
+                    activityListResponseDTOS.add(activityListResponseDTO);
+                }
+                return Response.<List<ActivityListResponseDTO>>builder()
+                        .code(ResponseCode.SUCCESS.getCode())
+                        .info(ResponseCode.SUCCESS.getInfo())
+                        .data(activityListResponseDTOS)
+                        .build();
+            }
+            return Response.<List<ActivityListResponseDTO>>builder()
+                    .code(ResponseCode.SUCCESS.getCode())
+                    .info(ResponseCode.SUCCESS.getInfo())
+                    .build();
+        } catch (Exception e) {
+            log.error("获取抽奖活动列表有误 errorMsg:{}", e.getMessage());
+            return Response.<List<ActivityListResponseDTO>>builder()
+                    .code(ResponseCode.UN_ERROR.getCode())
+                    .info(ResponseCode.UN_ERROR.getInfo())
                     .build();
         }
     }

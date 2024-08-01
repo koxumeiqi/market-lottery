@@ -72,5 +72,12 @@ public interface IRaffleActivityService {
      */
     Response<Boolean> creditPayExchangeSku(SkuProductShopCartRequestDTO request);
 
+    /**
+     * 获取到抽奖活动集合
+     *
+     * @return
+     */
+    Response<List<ActivityListResponseDTO>> queryActivityList();
+
 
 }

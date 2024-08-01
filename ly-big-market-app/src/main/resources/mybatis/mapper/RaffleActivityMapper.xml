@@ -37,4 +37,11 @@
         from raffle_activity
         where strategy_id = #{strategyId}
     </select>
+    <select id="queryActivityList" resultType="com.ly.infrastructure.persistent.po.RaffleActivity">
+        select activity_id,
+               activity_name
+        from raffle_activity
+        where state = 'open'
+          and end_date_time > now()
+    </select>
 </mapper>

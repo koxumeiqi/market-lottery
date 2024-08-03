@@ -12,6 +12,7 @@ import com.ly.domain.activity.service.IRaffleActivityAccountQuotaService;
 import com.ly.domain.activity.service.IRaffleActivityPartakeService;
 import com.ly.domain.activity.service.IRaffleActivitySkuProductService;
 import com.ly.domain.activity.service.armory.IActivityArmory;
+import com.ly.domain.award.model.entity.AwardShowEntity;
 import com.ly.domain.award.model.entity.DistributeAwardEntity;
 import com.ly.domain.award.model.entity.UserAwardRecordEntity;
 import com.ly.domain.award.model.vo.AwardStateVO;
@@ -43,6 +44,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 抽奖活动服务
@@ -402,6 +404,36 @@ public class RaffleActivityController implements IRaffleActivityService {
         } catch (Exception e) {
             log.error("获取抽奖活动列表有误 errorMsg:{}", e.getMessage());
             return Response.<List<ActivityListResponseDTO>>builder()
+                    .code(ResponseCode.UN_ERROR.getCode())
+                    .info(ResponseCode.UN_ERROR.getInfo())
+                    .build();
+        }
+    }
+
+    @RequestMapping(value = "query_all_activity_awards", method = RequestMethod.POST)
+    @Override
+    public Response<List<ActivityAwardResponseDTO>> queryAllActivityAwards(@RequestBody ActivityAwardRequestDTO request) {
+        try {
+            List<AwardShowEntity> awardList = awardService.queryAwardListByActivityId(request.getActivityId());
+            List<ActivityAwardResponseDTO> activityAwardResponseDTOS = awardList.stream()
+                    .map(awardShowEntity ->
+                            ActivityAwardResponseDTO.builder()
+                                    .userId(awardShowEntity.getUserId())
+                                    .awardId(awardShowEntity.getAwardId())
+                                    .awardStateDesc(AwardStateVO.getAwardStateDesc(awardShowEntity.getAwardStatus()))
+                                    .awardTime(awardShowEntity.getAwardTime())
+                                    .awardTitle(awardShowEntity.getAwardTitle())
+                                    .build()
+                    )
+                    .collect(Collectors.toList());
+            return Response.<List<ActivityAwardResponseDTO>>builder()
+                    .code(ResponseCode.SUCCESS.getCode())
+                    .info(ResponseCode.SUCCESS.getInfo())
+                    .data(activityAwardResponseDTOS)
+                    .build();
+        } catch (Exception e) {
+            log.error("获取活动抽奖结果信息失败 failure info:{}", e);
+            return Response.<List<ActivityAwardResponseDTO>>builder()
                     .code(ResponseCode.UN_ERROR.getCode())
                     .info(ResponseCode.UN_ERROR.getInfo())
                     .build();

@@ -2,6 +2,7 @@ package com.ly.domain.award.service;
 
 import com.ly.domain.award.event.SendAwardMessageEvent;
 import com.ly.domain.award.model.aggregate.UserAwardRecordAggregate;
+import com.ly.domain.award.model.entity.AwardShowEntity;
 import com.ly.domain.award.model.entity.DistributeAwardEntity;
 import com.ly.domain.award.model.entity.TaskEntity;
 import com.ly.domain.award.model.entity.UserAwardRecordEntity;
@@ -12,6 +13,7 @@ import com.ly.types.event.BaseEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 
@@ -81,5 +83,10 @@ public class AwardService implements IAwardService {
         }
         // 发放奖品
         distributeAward.giveOutPrizes(distributeAwardEntity);
+    }
+
+    @Override
+    public List<AwardShowEntity> queryAwardListByActivityId(Long activityId) {
+        return awardRepository.queryAwardListByActivityId(activityId);
     }
 }

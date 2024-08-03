@@ -13,11 +13,32 @@ import lombok.Getter;
 public enum AwardStateVO {
 
     create("create", "创建"),
-    complete("complete", "发奖完成"),
+    complete("completed", "发奖完成"),
     fail("fail", "发奖失败"),
     ;
 
     private final String code;
     private final String desc;
 
+    public static AwardStateVO getAwardStateVO(String awardState) {
+        for (AwardStateVO awardStateVO : AwardStateVO.values()) {
+            if (awardStateVO.getCode().equals(awardState)) {
+                return awardStateVO;
+            }
+        }
+        throw new IllegalArgumentException("奖品状态异常");
+    }
+
+    public static String getAwardStateDesc(AwardStateVO awardStatus) {
+        switch (awardStatus) {
+            case create:
+                return "待发货";
+            case complete:
+                return "发奖完成";
+            case fail:
+                return "发奖失败";
+            default:
+                return "";
+        }
+    }
 }

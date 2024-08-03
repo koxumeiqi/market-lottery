@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.ly.infrastructure.persistent.po.UserAwardRecord;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 @Mapper
 public interface UserAwardRecordDao extends BaseMapper<UserAwardRecord> {
 
@@ -12,5 +14,6 @@ public interface UserAwardRecordDao extends BaseMapper<UserAwardRecord> {
 
     int updateAwardRecordCompletedState(UserAwardRecord userAwardRecordReq);
 
+    List<UserAwardRecord> queryAwardListWithActivityId(Long activityId);
 
 }

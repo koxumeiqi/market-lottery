@@ -84,7 +84,7 @@ public interface IRaffleActivityService {
      * @param request
      * @return
      */
-    Response<ActivityAwardResponseDTO> queryAllActivityAwards(ActivityAwardRequestDTO request);
+    Response<List<ActivityAwardResponseDTO>> queryAllActivityAwards(ActivityAwardRequestDTO request);
 
 
 }

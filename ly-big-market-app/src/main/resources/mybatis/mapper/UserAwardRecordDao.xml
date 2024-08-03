@@ -18,4 +18,10 @@
           and order_id = #{orderId}
           and award_state = 'create'
     </update>
+    <select id="queryAwardListWithActivityId" resultType="com.ly.infrastructure.persistent.po.UserAwardRecord">
+        select *
+        from user_award_record
+        where activity_id = #{activityId}
+        order by create_time desc limit 50
+    </select>
 </mapper>

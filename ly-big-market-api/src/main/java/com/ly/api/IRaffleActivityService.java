@@ -79,5 +79,12 @@ public interface IRaffleActivityService {
      */
     Response<List<ActivityListResponseDTO>> queryActivityList();
 
+    /**
+     * 查询活动所有奖品集合
+     * @param request
+     * @return
+     */
+    Response<ActivityAwardResponseDTO> queryAllActivityAwards(ActivityAwardRequestDTO request);
+
 
 }

@@ -6,11 +6,11 @@ import com.ly.infrastructure.persistent.po.UserAwardRecord;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
-@DBRouterStrategy(isSplitTable = true)
 public interface UserAwardRecordDao extends BaseMapper<UserAwardRecord> {
 
     void insertUserAwardRecord(UserAwardRecord userAwardRecord);
 
     int updateAwardRecordCompletedState(UserAwardRecord userAwardRecordReq);
+
 
 }

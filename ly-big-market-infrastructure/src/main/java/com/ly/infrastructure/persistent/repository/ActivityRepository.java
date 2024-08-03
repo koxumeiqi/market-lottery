@@ -32,6 +32,7 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -692,6 +693,10 @@ public class ActivityRepository implements IActivityRepository {
             RaffleActivityOrder raffleActivityOrderRes = raffleActivityOrderMapper.queryRaffleActivityOrder(raffleActivityOrderReq);
 
             // 账户对象 - 总
+            if (Objects.isNull(raffleActivityOrderRes)) {
+                log.warn("活动订单不存在 activityOrder:{}", JSON.toJSONString(raffleActivityOrderRes));
+                return;
+            }
             RaffleActivityAccount raffleActivityAccount = new RaffleActivityAccount();
             raffleActivityAccount.setUserId(raffleActivityOrderRes.getUserId());
             raffleActivityAccount.setActivityId(raffleActivityOrderRes.getActivityId());

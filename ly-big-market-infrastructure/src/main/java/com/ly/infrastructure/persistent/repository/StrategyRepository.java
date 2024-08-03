@@ -430,10 +430,10 @@ public class StrategyRepository implements IStrategyRepository {
                 StrategyAward strategyAwardReq = new StrategyAward();
                 strategyAwardReq.setStrategyId(strategyId);
                 strategyAwardReq.setAwardId(awardId);
-                Map<Long, String> strategyAwardMap = strategyAwardDao.queryStrategyAward(strategyAwardReq);
+                StrategyAward strategyAward = strategyAwardDao.queryStrategyAward(strategyAwardReq);
                 awardList.add(RuleWeightVO.Award.builder()
                         .awardId(awardId)
-                        .awardTitle(strategyAwardMap.get(awardId))
+                        .awardTitle(strategyAward.getAwardTitle())
                         .build());
             }
 

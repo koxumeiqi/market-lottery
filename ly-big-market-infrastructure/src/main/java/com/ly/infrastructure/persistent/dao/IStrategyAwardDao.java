@@ -13,7 +13,6 @@ import java.util.Map;
 public interface IStrategyAwardDao extends BaseMapper<StrategyAward> {
     void updateStrategyAwardStock(StrategyAward strategyAward);
 
-    @MapKey("id")
-    Map<Long, String> queryStrategyAward(StrategyAward strategyAwardReq);
+    StrategyAward queryStrategyAward(StrategyAward strategyAwardReq);
 
 }

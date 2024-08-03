@@ -13,7 +13,7 @@
           and award_count_surplus > 0
     </update>
     <select id="queryStrategyAward" resultType="java.util.Map">
-        select id, award_title
+        select award_id, award_title
         from strategy_award
         where strategy_id = #{strategyId}
           and award_id = #{awardId}

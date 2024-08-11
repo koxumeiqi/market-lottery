@@ -26,6 +26,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 
@@ -141,7 +143,11 @@ public class CreditRepository implements ICreditRepository {
         try {
             routerStrategy.doRouter(userId);
             UserCreditAccount userCreditAccount = userCreditAccountDao.queryUserCreditAccount(userCreditAccountReq);
-            return CreditAccountEntity.builder().userId(userId).adjustAmount(userCreditAccount.getAvailableAmount()).build();
+            return CreditAccountEntity
+                    .builder()
+                    .userId(userId)
+                    .adjustAmount(Objects.isNull(userCreditAccount) ? BigDecimal.ZERO : userCreditAccount.getAvailableAmount())
+                    .build();
         } finally {
             routerStrategy.clear();
         }

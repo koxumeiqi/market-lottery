@@ -133,6 +133,7 @@ public class RaffleActivityController implements IRaffleActivityService {
                     .builder()
                     .strategyId(orderEntity.getStrategyId())
                     .userId(request.getUserId())
+                    .orderId(orderEntity.getOrderId())
                     .endDateTime(orderEntity.getEndDateTime())
                     .build());
             // 4. 保存抽奖结果+发货奖品

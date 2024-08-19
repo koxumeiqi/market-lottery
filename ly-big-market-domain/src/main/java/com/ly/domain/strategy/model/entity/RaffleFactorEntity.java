@@ -23,6 +23,10 @@ public class RaffleFactorEntity {
      */
     private String userId;
     /**
+     * 订单id，串整个链路，后面用它定位活动id和抽奖id
+     */
+    private String orderId;
+    /**
      * 策略ID
      */
     private Long strategyId;

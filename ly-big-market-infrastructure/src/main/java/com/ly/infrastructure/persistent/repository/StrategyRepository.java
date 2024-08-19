@@ -3,6 +3,7 @@ package com.ly.infrastructure.persistent.repository;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.conditions.query.QueryChainWrapper;
+import com.google.protobuf.ServiceException;
 import com.ly.domain.strategy.model.entity.StrategyAwardEntity;
 import com.ly.domain.strategy.model.entity.StrategyEntity;
 import com.ly.domain.strategy.model.entity.StrategyRuleEntity;
@@ -56,6 +57,9 @@ public class StrategyRepository implements IStrategyRepository {
 
     @Autowired
     private RaffleActivityMapper raffleActivityMapper;
+
+    @Autowired
+    private UserRaffleOrderDao userRaffleOrderDao;
 
     @Autowired
     private RaffleActivityAccountDayDao raffleActivityAccountDayDao;
@@ -392,8 +396,7 @@ public class StrategyRepository implements IStrategyRepository {
     }
 
     @Override
-    public Integer queryActivityAccountTotalUseCount(String userId, Long strategyId) {
-        Long activityId = raffleActivityMapper.queryActivityIdByStrategyId(strategyId);
+    public Integer queryActivityAccountTotalUseCount(String userId, Long activityId) {
         RaffleActivityAccount raffleActivityAccount = raffleActivityAccountMapper.queryActivityAccountByUserId(RaffleActivityAccount.builder()
                 .userId(userId)
                 .activityId(activityId)
@@ -449,6 +452,19 @@ public class StrategyRepository implements IStrategyRepository {
         redisService.setValue(cacheKey, ruleWeightVOS, 60 * 60 * 1000);
 
         return ruleWeightVOS;
+    }
+
+    @Override
+    public Long queryActivityIdByOrderId(String userId, String orderId) {
+        UserRaffleOrder userRaffleOrderReq = new UserRaffleOrder();
+        userRaffleOrderReq.setUserId(userId);
+        userRaffleOrderReq.setOrderId(orderId);
+        UserRaffleOrder userRaffleOrder = userRaffleOrderDao.queryByOrderId(userRaffleOrderReq);
+        if (Objects.isNull(userRaffleOrder)) {
+            log.error("用户:{} 参与活动抽奖的订单有误 orderId:{}", userId, orderId);
+            throw new RuntimeException("用户参与活动抽奖有误");
+        }
+        return userRaffleOrder.getActivityId();
     }
 
 }

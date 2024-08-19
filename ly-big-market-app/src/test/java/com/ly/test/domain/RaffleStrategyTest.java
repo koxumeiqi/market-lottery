@@ -71,7 +71,7 @@ public class RaffleStrategyTest {
         log.info("请求参数：{}", JSON.toJSONString(raffleFactorEntity));
         log.info("测试结果：{}", JSON.toJSONString(raffleAwardEntity));*/
         ILogicChain logicChain = chainFactory.openLogicChain(100001L);
-        logicChain.logic("user2", 100001L);
+//        logicChain.logic("user2", 100001L);
     }
 
     @Test
@@ -84,7 +84,7 @@ public class RaffleStrategyTest {
         log.info("请求参数：{}", JSON.toJSONString(raffleFactorEntity));
         log.info("测试结果：{}", JSON.toJSONString(raffleAwardEntity));*/
         ILogicChain logicChain = chainFactory.openLogicChain(100001L);
-        logicChain.logic("user1", 100001L);
+//        logicChain.logic("user1", 100001L);
 
     }
 

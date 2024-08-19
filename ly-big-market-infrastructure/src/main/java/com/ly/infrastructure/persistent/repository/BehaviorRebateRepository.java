@@ -105,6 +105,7 @@ public class BehaviorRebateRepository implements IBehaviorRebateRepository {
         }
 
         // 发送mq消息
+        // todo 改为异步
         for (BehaviorRebateAggregate behaviorRebateAggregate : behaviorRebateAggregates) {
             TaskEntity taskEntity = behaviorRebateAggregate.getTaskEntity();
             Task task = new Task();

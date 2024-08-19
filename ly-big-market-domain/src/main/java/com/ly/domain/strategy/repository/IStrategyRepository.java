@@ -77,8 +77,10 @@ public interface IStrategyRepository {
 
     Map<String, Integer> queryAwardRuleLockCount(String[] treeIds);
 
-    Integer queryActivityAccountTotalUseCount(String userId, Long strategyId);
+    Integer queryActivityAccountTotalUseCount(String userId, Long activityId);
 
     List<RuleWeightVO> queryAwardRuleWeight(Long strategyId);
+
+    Long queryActivityIdByOrderId(String userId, String orderId);
 
 }

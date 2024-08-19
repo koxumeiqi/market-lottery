@@ -39,4 +39,9 @@
         from user_raffle_order
         where user_id = #{userId} and activity_id = #{activityId} and order_state = 'create'
     </select>
+    <select id="queryByOrderId" resultType="com.ly.infrastructure.persistent.po.UserRaffleOrder">
+        select user_id, activity_id, activity_name, strategy_id, order_id, order_time, order_state
+        from user_raffle_order
+        where order_id = #{orderId}
+    </select>
 </mapper>

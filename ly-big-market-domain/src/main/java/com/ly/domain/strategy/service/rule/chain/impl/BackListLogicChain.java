@@ -28,12 +28,12 @@ public class BackListLogicChain extends AbstractLogicChain {
     }
 
     @Override
-    public DefaultChainFactory.StrategyAwardVO logic(String userId, Long strategyId) {
+    public DefaultChainFactory.StrategyAwardVO logic(String userId, Long strategyId, String orderId) {
 
         log.info("抽奖责任链-黑名单开始 userId: {} strategyId: {} ruleModel: {}", userId, strategyId, ruleModel());
         // 查询规则值配置
         String ruleValue = repository.queryStrategyRuleValue(strategyId, ruleModel());
-        if(ruleValue == null) return next().logic(userId, strategyId);
+        if (ruleValue == null) return next().logic(userId, strategyId, orderId);
         String[] splitRuleValue = ruleValue.split(Constants.COLON);
         Integer awardId = Integer.parseInt(splitRuleValue[0]);
         // 黑名单抽奖判断
@@ -51,6 +51,6 @@ public class BackListLogicChain extends AbstractLogicChain {
         }
         // 过滤其他责任链
         log.info("抽奖责任链-黑名单放行 userId: {} strategyId: {} ruleModel: {}", userId, strategyId, ruleModel());
-        return next().logic(userId, strategyId);
+        return next().logic(userId, strategyId, orderId);
     }
 }

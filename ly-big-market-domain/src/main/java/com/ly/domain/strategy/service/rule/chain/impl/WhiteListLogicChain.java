@@ -28,7 +28,7 @@ public class WhiteListLogicChain extends AbstractLogicChain {
     private IStrategyDispatch strategyDispatch;
 
     @Override
-    public DefaultChainFactory.StrategyAwardVO logic(String userId, Long strategyId) {
+    public DefaultChainFactory.StrategyAwardVO logic(String userId, Long strategyId, String orderId) {
         log.info("抽奖责任链-白名单开始 userId: {} strategyId: {} ruleModel: {}", userId, strategyId, ruleModel());
         String ruleValue = repository.queryStrategyRuleValue(strategyId,
                 ruleModel());
@@ -36,7 +36,7 @@ public class WhiteListLogicChain extends AbstractLogicChain {
         // 没有参与的白名单用户的话就走默认抽取逻辑
         if (StringUtils.isEmpty(ruleValue)) {
             log.info("抽奖责任链-白名单放行 userId: {} strategyId: {} ruleModel: {}", userId, strategyId, ruleModel());
-            return next().logic(userId, strategyId);
+            return next().logic(userId, strategyId, orderId);
         }
         String[] userIds = ruleValue.split(Constants.SPLIT);
         Set<String> whiteUserIds = new HashSet<>(Arrays.asList(userIds));
@@ -53,7 +53,7 @@ public class WhiteListLogicChain extends AbstractLogicChain {
             }
         }
         log.info("抽奖责任链-白名单放行 userId: {} strategyId: {} ruleModel: {}", userId, strategyId, ruleModel());
-        return next().logic(userId, strategyId);
+        return next().logic(userId, strategyId, orderId);
     }
 
     @Override

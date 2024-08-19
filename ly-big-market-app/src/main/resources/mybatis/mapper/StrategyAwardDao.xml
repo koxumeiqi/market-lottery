@@ -12,7 +12,7 @@
           and award_id = #{awardId}
           and award_count_surplus > 0
     </update>
-    <select id="queryStrategyAward" resultType="java.util.Map">
+    <select id="queryStrategyAward" resultType="com.ly.infrastructure.persistent.po.StrategyAward">
         select award_id, award_title
         from strategy_award
         where strategy_id = #{strategyId}

@@ -3,6 +3,7 @@ package com.ly.infrastructure.persistent.dao;
 import com.ly.infrastructure.persistent.po.RuleTreeNode;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ import java.util.List;
 @Mapper
 public interface RuleTreeNodeDao extends BaseMapper<RuleTreeNode> {
 
-    List<RuleTreeNode> queryRuleLocks(String[] treeIds);
+    List<RuleTreeNode> queryRuleLocks(@Param("treeIds") List<String> treeIds);
 
 }
 
